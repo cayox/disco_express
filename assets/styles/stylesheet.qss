@@ -1,0 +1,66 @@
+QWidget {
+    background-color: %background_color%;
+}
+
+QGroupBox#MusicWishWidget {
+    border: 2px solid %red%;
+    background-color: %cream%;
+    border-radius: 16px;
+}
+
+QLabel {
+    background-color: transparent;
+    color: %text_color%;
+}
+
+QLabel#MusicEntryDescriptor {
+    color: %red%;
+    font-family: 'Retosta';
+    font-size: 32px;
+}
+
+QLabel#HeaderLabel {
+    font-family: 'Retosta';
+    font-size: 32px;
+    color: %red%;
+}
+
+QLabel#Title {
+    font-family: 'The Juke Box';
+    font-size: 64px;
+    color: %red%;
+}
+
+QLineEdit {
+    border-radius: 16px;
+    padding: 12px 8px;
+    background-color: %yellow%;
+    font-size: 24px;
+    font-family: 'Retosta';
+    color: %red%;
+}
+
+QLineEdit:hover {
+    border: 3px solid %red%;
+}
+
+QLineEdit:focus {
+    border: 3px solid %turqoise%;
+}
+
+QPushButton {
+    border-radius: 16px;
+    padding: 12px 8px;
+    color: %cream%;
+    background-color: %turqoise%;
+    font-family: 'The Juke Box';
+    font-size: 48px;
+}
+
+QPushButton:hover {
+    background-color: %red%;
+}
+
+QPushButton:clicked {
+    background-color: %turqoise%;
+}

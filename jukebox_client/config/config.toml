@@ -1,0 +1,33 @@
+[general]
+documents = [
+    "path1",
+    "path2"
+]
+
+[network]
+server_ip = "localhost"
+server_port = 1080
+
+[colors]
+background_color = "#f5ebe0"
+text_color = "#001219"
+yellow = "#ee9b00"
+cream = "#e9d8a6"
+red = "#ae2012"
+gray = "#C0C0C0"
+turqoise = "#0a9396"
+white = "#f5ebe0"
+
+[languages.english]
+error_no_title = "No Title entered!s"
+error_no_interpret = "No Interpret entered!"
+error_slur_found = "{} contains a slur!"
+error_dj_unavailable = "The DJ does currently not accept wishes. Please try later again."
+error_network = "Request could not be sent! Please refer to an Admin"
+
+[languages.german]
+error_no_title = "Kein Titel angegeben!"
+error_no_interpret = "Kein Interpret angegeben!"
+error_slur_found = "{} enthält eine Beleidigung!"
+error_dj_unavailable = "Der DJ nimmt momentan keine neuen Musikwünsche an. Bitte versuche es später erneut."
+error_network = "Anfrage konnte nicht gesendet werden! Bitte wende dich an einen Admin"
