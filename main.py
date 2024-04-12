@@ -3,10 +3,9 @@ import sys
 
 from PyQt6 import QtWidgets, QtGui
 from jukebox_client.views import MainView
-from jukebox_client.config import CONFIG
+from jukebox_client.config import CONFIG, ASSETS
 from jukebox_client.controllers import MainController
 
-ASSETS = os.path.join(os.getcwd(), "assets")
 STYLESHEET = os.path.join(ASSETS, "styles", "stylesheet.qss")
 FONTS = os.path.join(ASSETS, "fonts")
 
@@ -32,7 +31,7 @@ def main():
 
     main_view = MainView()
     ctrl = MainController(main_view)
-    main_view.show()
+    main_view.showMaximized()
 
     app.exec()
 

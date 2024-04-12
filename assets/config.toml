@@ -1,0 +1,90 @@
+[general]
+app_name = "Disco Express"
+quick_selection_file = "assets/data/quick_selection.csv"
+slurs_file = "assets/data/slurs.txt"
+
+auto_close_time = 600  # in seconds
+
+######### ICONS
+artist_icon = "assets/icons/artist.svg"
+song_icon = "assets/icons/song.svg"
+file_icon = "assets/icons/file.svg"
+
+######### DOCUMENTS
+
+# Wenn hier ein Pfad geändert wird muss auch bei jeder Sprache der Name des entsprechenden Dokuments geändert werden
+documents = ["assets/documents/Fiverr Inbox Attachment.jpeg", "assets/documents/Musikwunsch status.pdf"]
+
+######### NETWORK
+
+[network]
+server_ip = "localhost"
+server_port = 1080
+
+######### COLORS
+
+[colors]
+background_color = "#f5ebe0"
+text_color = "#001219"
+accent = "#0a9396"
+highlight = "#ae2012"
+icon_color = "#f5ebe0"
+
+yellow = "#ee9b00"
+cream = "#e9d8a6"
+gray = "#C0C0C0"
+white = "#f5ebe0"
+
+######### LANGUAGES
+
+[[languages]]
+language_name = "german"
+language_icon = "assets/icons/de.svg"
+
+music_title = "Musik Titel"
+music_interpret = "Interpret"
+music_sender = "Von"
+music_receiver = "Für"
+music_message = "Nachricht"
+
+btn_quick_selection = "Schnelle Auswahl"
+btn_info = "Information"
+btn_send = "Anfrage Senden"
+
+error_no_title = "Kein Titel angegeben!"
+error_no_interpret = "Kein Interpret angegeben!"
+error_slur_found = "{} enthält eine Beleidigung!"
+error_dj_unavailable = "Der DJ nimmt momentan keine neuen Musikwünsche an. Bitte versuche es später erneut."
+error_network = "Anfrage konnte nicht gesendet werden! Bitte wende dich an einen Admin"
+
+quick_selection_artist_description = "Interpret"
+quick_selection_song_description = "Musik Titel"
+
+# Reihenfolge hier gleiche Reihenfolge wie oben unter "documents"
+document_names = ["Dokument 1", "Dokument 2"]
+
+[[languages]]
+language_name = "english"
+language_icon = "assets/icons/gb.svg"
+app_name = "Disco Express"
+
+music_title = "Music Title"
+music_interpret = "Artist"
+music_sender = "From"
+music_receiver = "For"
+music_message = "Message"
+
+btn_quick_selection = "Quick Selection"
+btn_info = "Info"
+btn_send = "Send Request"
+
+error_no_title = "No Title entered!"
+error_no_interpret = "No Interpret entered!"
+error_slur_found = "{} contains a slur!"
+error_dj_unavailable = "The DJ does currently not accept wishes. Please try later again."
+error_network = "Request could not be sent! Please refer to an Admin"
+
+quick_selection_artist_description = "Artist"
+quick_selection_song_description = "Music Title"
+
+document_names = ["Document 1", "Document 2"]

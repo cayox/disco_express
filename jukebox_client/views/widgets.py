@@ -1,6 +1,16 @@
 import datetime
+import os
 
 from PyQt6 import QtWidgets, QtCore, QtGui
+from PyQt6.QtCore import pyqtProperty
+from jukebox_client.config import ASSETS, CONFIG
+from jukebox_client.config.models import LanguageConfig
+
+from enum import Enum
+    
+class Button(QtWidgets.QPushButton):
+    def __init__(self, text: str):
+        super().__init__(f"<{text}>")
 
 
 class HeaderLabel(QtWidgets.QLabel):
@@ -53,13 +63,12 @@ class MusicEntry(QtWidgets.QWidget):
     ):
         super().__init__()
 
-        if not description.endswith(":"):
-            description += ":"
-
         layout = QtWidgets.QVBoxLayout(self)
-        self.descriptor = QtWidgets.QLabel(description)
+        self.descriptor = QtWidgets.QLabel()
         self.descriptor.setObjectName("MusicEntryDescriptor")
         layout.addWidget(self.descriptor)
+
+        self.set_descriptor_text(description)
 
         self.entry = QtWidgets.QLineEdit()
         layout.addWidget(self.entry)
@@ -72,6 +81,14 @@ class MusicEntry(QtWidgets.QWidget):
 
     def text(self) -> str | None:
         return self.entry.text() if self.entry.text() else None
+
+    def setText(self, text: str):
+        self.entry.setText(text)
+
+    def set_descriptor_text(self, text: str):
+        if not text.endswith(":"):
+            text += ":"
+        self.descriptor.setText(text)
 
 
 class GradientButton(QtWidgets.QPushButton):
@@ -110,8 +127,8 @@ class MusicWishWidget(QtWidgets.QGroupBox):
         self.music_title = MusicEntry("Musik Titel")
         layout.addWidget(self.music_title)
 
-        self.interpret = MusicEntry("Interpret")
-        layout.addWidget(self.interpret)
+        self.artist = MusicEntry("Interpret")
+        layout.addWidget(self.artist)
 
         self.sender_name = MusicEntry("Von")
         layout.addWidget(self.sender_name)
@@ -122,44 +139,64 @@ class MusicWishWidget(QtWidgets.QGroupBox):
         self.message = MusicEntry("Nachricht")
         layout.addWidget(self.message)
 
+
+class LanguageButton(QtWidgets.QPushButton):
+    def __init__(self, language: LanguageConfig):
+        super().__init__()
+        self.setObjectName("LanguageButton")
+
+        self._highlight = False
+        self.language = language
+
+        self.icon = QtGui.QIcon(language.language_icon)
+        self.setIcon(self.icon)
+        self.setIconSize(QtCore.QSize(48, 32))
+        self.setToolTip(language.language_name.capitalize())
+
+    @QtCore.pyqtProperty(bool)
+    def highlight(self):
+        return self._highlight
+
+    @highlight.setter
+    def highlight(self, state: bool):
+        # Register change of state
+        self._highlight = state
+        # Update displayed style
+        self.style().polish(self)
+
+
 class LanguageSwitch(QtWidgets.QWidget):
+    language_switched = QtCore.pyqtSignal(LanguageConfig)
+
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
-        self.setWindowTitle("Language Switch")
-        self.setGeometry(100, 100, 200, 60)
-        self.setFixedSize(200, 60)
-        self.is_english = True  # Start with English
+        self.buttons = []
 
-        # Icons
-        self.english_icon = QtGui.QIcon("icons/uk.png")
-        self.german_icon = QtGui.QIcon("icons/germany.png")
+        self._language = CONFIG.languages[0]
 
-        # English flag label
-        self.label_english = QtWidgets.QLabel(self)
-        self.label_english.setPixmap(self.english_icon.pixmap(QtCore.QSize(40, 25)))
+        layout = QtWidgets.QHBoxLayout(self)
+        layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
-        # German flag label
-        self.label_german = QtWidgets.QLabel(self)
-        self.label_german.setPixmap(self.german_icon.pixmap(QtCore.QSize(40, 25)))
+        for index, language in enumerate(CONFIG.languages):
+            language: LanguageConfig
+            button = LanguageButton(language)
+            if index == 0:
+                button.highlight = True
+            button.clicked.connect(self.on_language_change)
+            layout.addWidget(button)
+            self.buttons.append(button)
 
-        # Switch button
-        self.switch_button = QtWidgets.QLabel(self)
-        self.switch_button.setGeometry(70, 15, 60, 30)  # Position the switch in the middle
+    @QtCore.pyqtSlot()
+    def on_language_change(self):
+        sender: LanguageButton = self.sender()
+        if self._language == sender.language:
+            return
 
-    def paintEvent(self, event):
-        painter = QtGui.QPainter(self.switch_button)
+        for button in self.buttons:
+            button.highlight = button == sender
 
-        # Background of the switch
-        painter.setBrush(QtGui.QBrush(QtGui.QColor(200, 200, 200)))  # Grey background
-        painter.drawRoundedRect(0, 0, 60, 30, 15, 15)
+        self._language = sender.language
+        self.language_switched.emit(self._language)
 
-        # Moving circle of the switch
-        painter.setBrush(QtGui.QBrush(QtGui.QColor("#FAFAFA")))
-        if self.is_english:
-            painter.drawEllipse(5, 5, 20, 20)
-        else:
-            painter.drawEllipse(35, 5, 20, 20)
-
-    def mousePressEvent(self, event):
-        self.is_english = not self.is_english
-        self.update()
+    def get_selected_language(self) -> LanguageConfig:
+        return self._language

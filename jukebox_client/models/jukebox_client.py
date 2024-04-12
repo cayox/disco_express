@@ -9,6 +9,7 @@ class MusicRequest(BaseModel):
     receiver: str | None = None
     message: str | None = None
 
+
 class JukeBoxError(BaseModel):
     status: str
     error: str
@@ -34,6 +35,6 @@ class JukeBoxClient:
         return None, JukeBoxError(**response.json())
 
     def send_music_request(self, music_request: MusicRequest) -> None | JukeBoxError:
-        response, err = self.request("/music-wish", data=music_request.__dict__)
+        response, err = self.request("POST", "/music-wish", data=music_request.__dict__)
         if err is not None:
             return err

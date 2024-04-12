@@ -1,5 +1,11 @@
 from PyQt6 import QtWidgets, QtCore, QtGui
-from jukebox_client.views.widgets import TitleLabel, TimeWidget, MusicWishWidget, LanguageSwitch
+from jukebox_client.views.widgets import (
+    TitleLabel,
+    TimeWidget,
+    MusicWishWidget,
+    LanguageSwitch,
+    Button
+)
 
 
 class MainView(QtWidgets.QWidget):
@@ -36,19 +42,19 @@ class MainView(QtWidgets.QWidget):
         self.music_wish_widget = MusicWishWidget()
         layout.addWidget(self.music_wish_widget)
 
-        self.language = LanguageSwitch()
-        layout.addWidget(self.language)
+        self.language_widget = LanguageSwitch()
+        layout.addWidget(self.language_widget)
 
         layout.addStretch()
 
         footer_layout = QtWidgets.QHBoxLayout()
         layout.addLayout(footer_layout)
 
-        self.quick_select_button = QtWidgets.QPushButton("<Schnell Auswahl>")
+        self.quick_select_button = Button("Schnell Auswahl")
         footer_layout.addWidget(self.quick_select_button)
 
-        self.info_button = QtWidgets.QPushButton("<Information>")
+        self.info_button = Button("Information")
         footer_layout.addWidget(self.info_button)
 
-        self.send_button = QtWidgets.QPushButton("<Abschicken>")
+        self.send_button = Button("Abschicken")
         footer_layout.addWidget(self.send_button)

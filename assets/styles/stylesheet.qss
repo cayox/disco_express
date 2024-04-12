@@ -1,9 +1,73 @@
+* {
+    font-family: 'Retosta';
+}
+
 QWidget {
     background-color: %background_color%;
 }
 
+QScrollBar:vertical, QScrollBar:horizontal {
+    border: none;
+    background: %background_color%;
+    width: 10px;  /* Adjust the width for vertical scroll bars */
+    height: 10px; /* Adjust the height for horizontal scroll bars */
+}
+
+QScrollBar::handle:vertical, QScrollBar::handle:horizontal {
+    background-color: %accent%; /* Turquoise color */
+    min-height: 20px; /* Minimum handle height for vertical scroll bar */
+    min-width: 20px;  /* Minimum handle width for horizontal scroll bar */
+    border-radius: 5px; /* Rounded edges for the handle */
+}
+
+QScrollBar::add-line, QScrollBar::sub-line {
+    background: none;
+}
+
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical, QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
+    background: none;
+}
+
+QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical, QScrollBar::left-arrow:horizontal, QScrollBar::right-arrow:horizontal {
+    width: 0px; /* Hide arrows */
+    height: 0px; /* Hide arrows */
+}
+
+QScrollBar::add-line:vertical {
+    position: absolute;
+    bottom: 0px;
+    height: 0px; /* Hide bottom button */
+    subcontrol-position: bottom;
+    subcontrol-origin: margin;
+}
+
+QScrollBar::sub-line:vertical {
+    position: absolute;
+    top: 0px;
+    height: 0px; /* Hide top button */
+    subcontrol-position: top;
+    subcontrol-origin: margin;
+}
+
+QScrollBar::add-line:horizontal {
+    position: absolute;
+    right: 0px;
+    width: 0px; /* Hide right button */
+    subcontrol-position: right;
+    subcontrol-origin: margin;
+}
+
+QScrollBar::sub-line:horizontal {
+    position: absolute;
+    left: 0px;
+    width: 0px; /* Hide left button */
+    subcontrol-position: left;
+    subcontrol-origin: margin;
+}
+
+
 QGroupBox#MusicWishWidget {
-    border: 2px solid %red%;
+    border: 2px solid %highlight%;
     background-color: %cream%;
     border-radius: 16px;
 }
@@ -14,21 +78,19 @@ QLabel {
 }
 
 QLabel#MusicEntryDescriptor {
-    color: %red%;
-    font-family: 'Retosta';
+    color: %highlight%;
     font-size: 32px;
 }
 
 QLabel#HeaderLabel {
-    font-family: 'Retosta';
     font-size: 32px;
-    color: %red%;
+    color: %highlight%;
 }
 
 QLabel#Title {
     font-family: 'The Juke Box';
-    font-size: 64px;
-    color: %red%;
+    font-size: 96px;
+    color: %highlight%;
 }
 
 QLineEdit {
@@ -36,31 +98,80 @@ QLineEdit {
     padding: 12px 8px;
     background-color: %yellow%;
     font-size: 24px;
-    font-family: 'Retosta';
-    color: %red%;
+    color: %highlight%;
 }
 
 QLineEdit:hover {
-    border: 3px solid %red%;
+    border: 3px solid %highlight%;
 }
 
 QLineEdit:focus {
-    border: 3px solid %turqoise%;
+    border: 3px solid %accent%;
 }
 
 QPushButton {
     border-radius: 16px;
     padding: 12px 8px;
     color: %cream%;
-    background-color: %turqoise%;
+    background-color: %accent%;
     font-family: 'The Juke Box';
     font-size: 48px;
 }
 
 QPushButton:hover {
-    background-color: %red%;
+    background-color: %highlight%;
 }
 
 QPushButton:clicked {
-    background-color: %turqoise%;
+    background-color: %accent%;
+}
+
+QPushButton#LanguageButton{
+    background-color: %gray%;
+    border-radius: 16px;
+    border: 4px solid %gray%;
+    padding: 12px;
+}
+
+QPushButton#LanguageButton:hover{
+    border: 4px solid %accent%;
+}
+
+
+QPushButton#LanguageButton[highlight="true"] {
+    border: 4px solid %highlight%;
+}
+
+QDialog#QuickSelectionDialog {
+    background-color: %background_color%;
+}
+
+QGroupBox#SongWidget {
+    background-color: %accent%;
+    border-radius: 16px;
+    color: %text_color%;
+    font-size: 32px;
+    padding-top: 8px;
+}
+
+QLabel#SongValueLabel {
+    color: %text_color%;
+    font-size: 24px;
+}
+
+QLabel#SongDescriptionLabel {
+    color: %text_color%;
+    font-size: 16px;
+}
+
+QPushButton#DocumentWidget {
+    background-color: %accent%;
+    border-radius: 16px;
+    color: %cream%;
+    font-size: 32px;
+    font-family: 'Retosta';
+}
+
+QPushButton#DocumentWidget:hover {
+    background-color: %highlight%;
 }
