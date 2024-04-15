@@ -91,29 +91,6 @@ class MusicEntry(QtWidgets.QWidget):
         self.descriptor.setText(text)
 
 
-class GradientButton(QtWidgets.QPushButton):
-    def __init__(self, parent=None) -> None:
-        super().__init__(parent)
-        self.setText("Click Me!")
-        self.current_hue = 0
-
-        self.setStyleSheet(self.generate_qss(self.current_hue))
-
-        self.timer = QtCore.QTimer(self)
-        self.timer.timeout.connect(self.update_style)
-        self.timer.start(100)
-
-    def generate_qss(self, hue: int) -> str:
-        """Generate a QSS string to set the button color based on the hue."""
-        color = QtGui.QColor.fromHsv(hue, 200, 200).name()
-        return f"QPushButton {{ background-color: {color}; }}"
-
-    def update_style(self) -> None:
-        """Update the button's style by cycling through hues."""
-        self.current_hue = (self.current_hue + 1) % 360
-        self.setStyleSheet(self.generate_qss(self.current_hue))
-
-
 class MusicWishWidget(QtWidgets.QGroupBox):
     def __init__(self):
         super().__init__()

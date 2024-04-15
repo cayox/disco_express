@@ -1,1 +1,1 @@
-from .jukebox_client import JukeBoxError, JukeBoxClient, MusicRequest
+from .jukebox_client import JukeBoxError, JukeBoxClient, MusicRequest, JukeBoxConnectionError

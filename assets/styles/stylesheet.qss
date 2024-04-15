@@ -13,6 +13,7 @@ QScrollBar:vertical, QScrollBar:horizontal {
     height: 10px; /* Adjust the height for horizontal scroll bars */
 }
 
+
 QScrollBar::handle:vertical, QScrollBar::handle:horizontal {
     background-color: %accent%; /* Turquoise color */
     min-height: 20px; /* Minimum handle height for vertical scroll bar */
@@ -72,9 +73,23 @@ QGroupBox#MusicWishWidget {
     border-radius: 16px;
 }
 
+QGroupBox#MusicWishWidget:disabled {
+    border: 2px solid %disabled_dark%;
+    background-color: %disabled%;
+}
+
 QLabel {
     background-color: transparent;
     color: %text_color%;
+}
+
+QLabel:disabled, QLabel#MusicEntryDescriptor:disabled, QLabel#HeaderLabel:disabled, QLabel#Title:disabled {
+    color: %disabled_dark%;
+}
+
+QLabel#ConnectionLostLabel {
+    color: %highlight%;
+    font-size: 24px;
 }
 
 QLabel#MusicEntryDescriptor {
@@ -101,6 +116,11 @@ QLineEdit {
     color: %highlight%;
 }
 
+QLineEdit:disabled {
+    border: 3px dashed %disabled_dark%;
+    background-color: %disabled_light%;
+}
+
 QLineEdit:hover {
     border: 3px solid %highlight%;
 }
@@ -118,6 +138,11 @@ QPushButton {
     font-size: 48px;
 }
 
+QPushButton:disabled {
+    background-color: %disabled_dark%;
+    color: %disabled_light%;
+}
+
 QPushButton:hover {
     background-color: %highlight%;
 }
@@ -131,6 +156,10 @@ QPushButton#LanguageButton{
     border-radius: 16px;
     border: 4px solid %gray%;
     padding: 12px;
+}
+
+QPushButton#LanguageButton:disabled {
+    border: 4px solid %disabled_dark%;
 }
 
 QPushButton#LanguageButton:hover{

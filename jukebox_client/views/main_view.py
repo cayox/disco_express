@@ -39,6 +39,12 @@ class MainView(QtWidgets.QWidget):
 
         layout.addStretch()
 
+        self.connection_lost_label = QtWidgets.QLabel("Connection to the server lost. Please contact an Admin")
+        self.connection_lost_label.setVisible(False)
+        self.connection_lost_label.setObjectName("ConnectionLostLabel")
+        self.connection_lost_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(self.connection_lost_label)
+
         self.music_wish_widget = MusicWishWidget()
         layout.addWidget(self.music_wish_widget)
 

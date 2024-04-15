@@ -63,8 +63,6 @@ class SongWidget(QtWidgets.QGroupBox):
         self.song = song
         self.language = language
 
-        self._set_title()
-
         self._build_ui()
         self.setMouseTracking(True)
 
@@ -78,6 +76,8 @@ class SongWidget(QtWidgets.QGroupBox):
         artist_icon = os.path.join(os.getcwd(), CONFIG.general.artist_icon)
         self.artist_widget = SongRow(artist_icon, self.language.quick_selection_artist_description, self.song.artist)
         layout.addWidget(self.artist_widget)
+
+
 
     def _set_title(self):
         title = f"# {self.index}"

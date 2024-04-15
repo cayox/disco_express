@@ -2,7 +2,7 @@ from jukebox_client.views import MainView, QuickSelectionDialog, DocumentDialog
 from PyQt6 import QtCore, QtWidgets
 from jukebox_client.config import CONFIG, contains_slur
 from jukebox_client.config.models import LanguageConfig
-from jukebox_client.models import JukeBoxClient, JukeBoxError, MusicRequest
+from jukebox_client.models import JukeBoxClient, JukeBoxError, MusicRequest, JukeBoxConnectionError
 
 class LanguageError(Exception):
     ...
@@ -29,6 +29,7 @@ class MainController(QtCore.QObject):
         self.view.language_widget.language_switched.connect(self.set_selected_language)
 
         self.set_selected_language()
+        self.check_connection()
 
     @QtCore.pyqtSlot()
     def set_selected_language(self):
@@ -44,6 +45,13 @@ class MainController(QtCore.QObject):
         self.view.send_button.setText(f"<{language.btn_send}>")
         self.view.info_button.setText(f"<{language.btn_info}>")
         self.view.quick_select_button.setText(f"<{language.btn_quick_selection}>")
+
+        self.view.connection_lost_label.setText(language.error_no_connection_to_server)
+
+        self.timer = QtCore.QTimer()
+        self.timer.setInterval(CONFIG.general.server_refresh_interval*1000)
+        self.timer.timeout.connect(self.check_connection)
+        self.timer.start()
 
     def show_error(self, text: str):
         QtWidgets.QMessageBox.critical(self.view, "Error", text)
@@ -97,9 +105,35 @@ class MainController(QtCore.QObject):
             self.show_error(error_message)
             return
 
-        error = self._client.send_music_request(music_request)
+        try:
+            error = self._client.send_music_request(music_request)
+        except JukeBoxConnectionError as e:
+            if CONFIG.general.debug:
+                raise e
+            self.show_error("Cannot reach the Jukebox Server. Please inform an Admin!")
+            return
+
         if error is not None:
             if error.status == "unavailable":
                 self.show_error(self.get_language().error_dj_unavailable)
             else:
                 self.show_error(self.get_language().error_network)
+
+    @QtCore.pyqtSlot()
+    def check_connection(self):
+        try:
+            self._client.heartbeat()
+            self.set_connection_status(True)
+        except Exception:
+            self.set_connection_status(False)
+
+    def set_connection_status(self, enabled: bool):
+        self.view.music_wish_widget.setEnabled(enabled)
+        # self.view.title.setEnabled(enabled)
+        # self.view.time_widget.setEnabled(enabled)
+        # self.view.date_widget.setEnabled(enabled)
+        self.view.send_button.setEnabled(enabled)
+        self.view.quick_select_button.setEnabled(enabled)
+
+        self.view.connection_lost_label.setVisible(not enabled)
+

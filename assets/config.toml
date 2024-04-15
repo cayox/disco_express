@@ -1,9 +1,12 @@
 [general]
+debug = true
+
 app_name = "Disco Express"
 quick_selection_file = "assets/data/quick_selection.csv"
 slurs_file = "assets/data/slurs.txt"
 
 auto_close_time = 600  # in seconds
+server_refresh_interval = 10  # in seconds
 
 ######### ICONS
 artist_icon = "assets/icons/artist.svg"
@@ -19,7 +22,7 @@ documents = ["assets/documents/Fiverr Inbox Attachment.jpeg", "assets/documents/
 
 [network]
 server_ip = "localhost"
-server_port = 1080
+server_port = 8080
 
 ######### COLORS
 
@@ -34,6 +37,10 @@ yellow = "#ee9b00"
 cream = "#e9d8a6"
 gray = "#C0C0C0"
 white = "#f5ebe0"
+
+disabled_light = "#ced4da"
+disabled = "#adb5bd"
+disabled_dark = "#6c757d"
 
 ######### LANGUAGES
 
@@ -56,6 +63,7 @@ error_no_interpret = "Kein Interpret angegeben!"
 error_slur_found = "{} enthält eine Beleidigung!"
 error_dj_unavailable = "Der DJ nimmt momentan keine neuen Musikwünsche an. Bitte versuche es später erneut."
 error_network = "Anfrage konnte nicht gesendet werden! Bitte wende dich an einen Admin"
+error_no_connection_to_server = "Server unerreichbar! Bitte kontaktieren Sie einen Administrator"
 
 quick_selection_artist_description = "Interpret"
 quick_selection_song_description = "Musik Titel"
@@ -83,6 +91,7 @@ error_no_interpret = "No Interpret entered!"
 error_slur_found = "{} contains a slur!"
 error_dj_unavailable = "The DJ does currently not accept wishes. Please try later again."
 error_network = "Request could not be sent! Please refer to an Admin"
+error_no_connection_to_server = "Server unavailable! Please contact an Admin"
 
 quick_selection_artist_description = "Artist"
 quick_selection_song_description = "Music Title"

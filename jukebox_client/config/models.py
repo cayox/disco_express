@@ -18,6 +18,10 @@ class ColorsConfig(BaseModel):
     gray: str
     white: str
 
+    disabled_light: str
+    disabled: str
+    disabled_dark: str
+
 
 class LanguageConfig(BaseModel):
     language_name: str
@@ -38,6 +42,7 @@ class LanguageConfig(BaseModel):
     error_slur_found: str
     error_dj_unavailable: str
     error_network: str
+    error_no_connection_to_server: str
 
     quick_selection_artist_description: str
     quick_selection_song_description: str
@@ -51,12 +56,14 @@ class NetworkConfig(BaseModel):
 
 
 class GeneralConfig(BaseModel):
+    debug: bool
     app_name: str
     quick_selection_file: str
     slurs_file: str
     documents: list[str]
 
     auto_close_time: int
+    server_refresh_interval: int
 
     artist_icon: str
     song_icon: str
