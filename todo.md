@@ -1,7 +1,13 @@
-# Client
-* Ladebalken gewünscht ? Request geht sehr schnell -> ladebalken macht keinen sinn
-  * kann Fake ladebalken einbauen
-* Wie soll das programm geschlossen werden ohne dass Benutzer es schließen können ?
+# TODOS
+* [ ] Fake Ladebalken einbauen als spam schutz
+* [ ] App soll durch Server geschlossen werden können.
+* [ ] Charts und Jukebox Klassiker, in Quick Selection
+* [ ] Anleitung zum autostart der App
 
-# Server
-* Fenster bauen für historie ? 
+
+# Meeting
+* Banner auf homepage mit fahrpreis und quick info
+* aktuelle lieder tab bei schnell auswahl
+* Dokumente vom Primärrechner ziehen
+* Hintergrund Jukebox -> texte besser leserlich machen
+* Allgemeine informationen fix 

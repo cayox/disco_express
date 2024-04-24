@@ -1,11 +1,16 @@
+import os
+
 from PyQt6 import QtWidgets, QtCore, QtGui
 from jukebox_client.views.widgets import (
     TitleLabel,
     TimeWidget,
     MusicWishWidget,
     LanguageSwitch,
-    Button
+    Button,
+    IconButton,
 )
+from .view import View
+from jukebox_client.config import CONFIG
 
 
 class MainView(QtWidgets.QWidget):
@@ -14,6 +19,13 @@ class MainView(QtWidgets.QWidget):
         self.setObjectName("MainView")
 
         self._build_ui()
+        self.background = QtGui.QPixmap(
+            os.path.join(os.getcwd(), CONFIG.style.background_image)
+        )
+
+    def paintEvent(self, event) -> None:
+        painter = QtGui.QPainter(self)
+        painter.drawPixmap(self.rect(), self.background)
 
     def _build_ui(self):
         layout = QtWidgets.QVBoxLayout()
@@ -23,44 +35,29 @@ class MainView(QtWidgets.QWidget):
         self.setLayout(layout)
 
         header_layout = QtWidgets.QHBoxLayout()
-        header_layout.setSpacing(256)
         layout.addLayout(header_layout)
+
+        self.home_button = IconButton(
+            CONFIG.icons.home_icon, CONFIG.style.colors.text_color, 128
+        )
+        header_layout.addWidget(self.home_button)
 
         self.time_widget = TimeWidget()
         header_layout.addWidget(self.time_widget)
+
         header_layout.addStretch()
 
         self.title = TitleLabel("Disco Express")
         header_layout.addWidget(self.title)
+
         header_layout.addStretch()
 
         self.date_widget = TimeWidget(time_format="%d.%m.%y")
         header_layout.addWidget(self.date_widget)
 
-        layout.addStretch()
+        self.stack = QtWidgets.QStackedWidget()
+        layout.addWidget(self.stack)
 
-        self.connection_lost_label = QtWidgets.QLabel("Connection to the server lost. Please contact an Admin")
-        self.connection_lost_label.setVisible(False)
-        self.connection_lost_label.setObjectName("ConnectionLostLabel")
-        self.connection_lost_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
-        layout.addWidget(self.connection_lost_label)
-
-        self.music_wish_widget = MusicWishWidget()
-        layout.addWidget(self.music_wish_widget)
-
-        self.language_widget = LanguageSwitch()
-        layout.addWidget(self.language_widget)
-
-        layout.addStretch()
-
-        footer_layout = QtWidgets.QHBoxLayout()
-        layout.addLayout(footer_layout)
-
-        self.quick_select_button = Button("Schnell Auswahl")
-        footer_layout.addWidget(self.quick_select_button)
-
-        self.info_button = Button("Information")
-        footer_layout.addWidget(self.info_button)
-
-        self.send_button = Button("Abschicken")
-        footer_layout.addWidget(self.send_button)
+    def add_page(self, page: View) -> int:
+        self.stack.addWidget(page)
+        return self.stack.count() - 1

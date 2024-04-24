@@ -3,7 +3,65 @@
 }
 
 QWidget {
+    background-color: transparent;
+}
+
+QWidget#MainView, QDialog#ImageViewer {
     background-color: %background_color%;
+}
+
+QWidget#InfoView, QWidget#HomeView {
+    background-color: transparent;
+}
+
+QDialog {
+    background-color: %background_color%;
+}
+
+QTabWidget::pane { /* The tab widget frame */
+    border: none;
+}
+
+QTabWidget::tab-bar {
+    left: 5px; /* move to the right by 5px */
+}
+
+QTabBar::tab {
+    background: %accent%;
+    color: %text_color%;
+    border-radius: 8px;
+    min-width: 8ex;
+    padding: 5px;
+    font-family: 'The Juke Box';
+    font-size: 32px;
+    border-right: 4px solid %off_accent%;
+    border-bottom: 4px solid %off_accent%;
+    margin-right: 32px;
+}
+
+QTabBar::tab:hover {
+    border-right: 6px solid %off_accent%;
+    border-bottom: 6px solid %off_accent%;
+}
+
+QTabBar::tab:selected {
+    background: %off_accent%;
+    border: none;
+}
+
+QTabBar::tab:selected {
+    border-bottom-color: #f0f0f0; /* same as the tab color */
+}
+
+QProgressBar {
+    border: 2px solid %gray%;
+    border-radius: 5px;
+    background-color: %disabled_light%;
+}
+
+QProgressBar::chunk {
+    background-color: %highlight%;
+    border-radius: 5px;
 }
 
 QScrollBar:vertical, QScrollBar:horizontal {
@@ -68,9 +126,11 @@ QScrollBar::sub-line:horizontal {
 
 
 QGroupBox#MusicWishWidget {
-    border: 2px solid %highlight%;
-    background-color: %cream%;
+    border-right: 4px solid %off_accent%;
+    border-bottom: 4px solid %off_accent%;
+    background-color: %accent%;
     border-radius: 16px;
+    margin: 16px 256px;
 }
 
 QGroupBox#MusicWishWidget:disabled {
@@ -79,41 +139,72 @@ QGroupBox#MusicWishWidget:disabled {
 }
 
 QLabel {
-    background-color: transparent;
-    color: %text_color%;
+    background-color: %highlight%;
+    color: %background_color%;
+    border: 2px solid %white%;
+    border-radius: 16px;
+    padding: 16px;
 }
+
 
 QLabel:disabled, QLabel#MusicEntryDescriptor:disabled, QLabel#HeaderLabel:disabled, QLabel#Title:disabled {
     color: %disabled_dark%;
 }
 
 QLabel#ConnectionLostLabel {
-    color: %highlight%;
+    color: %highlight_glow%;
     font-size: 24px;
+    border: none;
+    background-color: transparent;
+    padding: 0px;
 }
 
 QLabel#MusicEntryDescriptor {
-    color: %highlight%;
-    font-size: 32px;
+    color: %text_color%;
+    font-size: 48px;
+    font-family: 'The Juke Box';
+    border: none;
+    background-color: transparent;
+    padding: 0px;
+
 }
 
 QLabel#HeaderLabel {
     font-size: 32px;
+    color: %highlight_glow%;
+    border: none;
+    background-color: transparent;
+    padding: 0px;
+}
+
+QLabel#TimeWidget{
+    font-size: 32px;
     color: %highlight%;
+    border: none;
+    background-color: transparent;
+    padding: 0px;
 }
 
 QLabel#Title {
     font-family: 'The Juke Box';
     font-size: 96px;
     color: %highlight%;
+    border: none;
+    background-color: transparent;
+    padding: 0px;
+}
+
+QLabel#RotatingLabel {
+    font-size: 32px;
+    color: %highlight_glow%;
 }
 
 QLineEdit {
-    border-radius: 16px;
+    border-radius: 8px;
     padding: 12px 8px;
-    background-color: %yellow%;
+    background-color: %off_accent%;
     font-size: 24px;
-    color: %highlight%;
+    color: %text_color%;
 }
 
 QLineEdit:disabled {
@@ -122,62 +213,69 @@ QLineEdit:disabled {
 }
 
 QLineEdit:hover {
-    border: 3px solid %highlight%;
+    border: 4px solid %text_color%;
 }
 
 QLineEdit:focus {
-    border: 3px solid %accent%;
+    border: 4px solid %text_color%;
 }
 
 QPushButton {
-    border-radius: 16px;
+    border-radius: 8px;
     padding: 12px 8px;
-    color: %cream%;
+    color: %text_color%;
     background-color: %accent%;
     font-family: 'The Juke Box';
     font-size: 48px;
+    border: 4px solid %accent_glow%;
+    min-width: 64px;
 }
 
 QPushButton:disabled {
     background-color: %disabled_dark%;
     color: %disabled_light%;
+    border: none;
 }
 
 QPushButton:hover {
-    background-color: %highlight%;
+    border: 4px solid %white%;
+    color: %white%;
+
 }
 
-QPushButton:clicked {
-    background-color: %accent%;
+QPushButton:pressed {
+    background-color: %white%;
+    border: 4px solid %accent_glow%;
+    color: %accent_glow%;
 }
-
-QPushButton#LanguageButton{
-    background-color: %gray%;
-    border-radius: 16px;
-    border: 4px solid %gray%;
-    padding: 12px;
-}
-
-QPushButton#LanguageButton:disabled {
-    border: 4px solid %disabled_dark%;
-}
-
-QPushButton#LanguageButton:hover{
-    border: 4px solid %accent%;
-}
-
 
 QPushButton#LanguageButton[highlight="true"] {
-    border: 4px solid %highlight%;
+    background-color: %highlight%;
+    border: 4px solid %highlight_glow%;
+}
+
+QPushButton#NavigationButton {
+    padding: 64px 128px;
+    font-size: 64px;
+}
+
+QPushButton#IconButton {
+    min-width: 16px;
 }
 
 QDialog#QuickSelectionDialog {
     background-color: %background_color%;
 }
 
+QWidget#SongListWidget {
+    background-color: %background_color%;
+}
+
 QGroupBox#SongWidget {
     background-color: %accent%;
-    border-radius: 16px;
+    border-radius: 8px;
+    border-right: 4px solid %off_accent%;
+    border-bottom: 4px solid %off_accent%;
     color: %text_color%;
     font-size: 32px;
     padding-top: 8px;
@@ -186,21 +284,40 @@ QGroupBox#SongWidget {
 QLabel#SongValueLabel {
     color: %text_color%;
     font-size: 24px;
+    border: none;
+    background-color: transparent;
+    padding: 0px;
 }
 
 QLabel#SongDescriptionLabel {
-    color: %text_color%;
+    color: %off_accent%;
     font-size: 16px;
+    border: none;
+    background-color: transparent;
+    padding: 0px;
+}
+
+QLabel#SongIconLabel {
+    border: none;
+    background-color: transparent;
+    padding: 0px;
+}
+
+QLabel#SubHeaderLabel {
+    color: %highlight_glow%;
+    font-size: 32px;
 }
 
 QPushButton#DocumentWidget {
-    background-color: %accent%;
-    border-radius: 16px;
-    color: %cream%;
+    border-radius: 8px;
     font-size: 32px;
     font-family: 'Retosta';
 }
 
-QPushButton#DocumentWidget:hover {
-    background-color: %highlight%;
+QLabel#LoadingLabel, QLabel#LoadingSuccessLabel {
+    color: %highlight%;
+    font-size: 16px;
+    border: none;
+    background-color: transparent;
+    padding: 0px;
 }

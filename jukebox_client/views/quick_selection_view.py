@@ -1,21 +1,25 @@
 import os.path
 
 from PyQt6 import QtWidgets, QtCore, QtGui, QtSvg
-from jukebox_client.config import QUICK_SELECTION_SONGS, Song, ASSETS, CONFIG
+from jukebox_client.config import CLASSICS_SONGS, Song, CONFIG, CURRENT_CHARTS_SONGS
 from jukebox_client.config.models import LanguageConfig
-from jukebox_client.views.widgets import Button
+from jukebox_client.views.widgets import Button, build_accent_glow_effect
+from .helpers import load_colored_svg
+from jukebox_client.config import load_songs_from_csv
+from jukebox_client.models import ChartsManager
 
 
 class SongRow(QtWidgets.QWidget):
     ICON_SIZE = 48
 
-    def __init__(self, icon: str, description: str, value: str):
+    def __init__(self, icon: str, description: str, value: str, plays: int = 0):
         super().__init__()
         layout = QtWidgets.QHBoxLayout(self)
         layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft)
 
         icon_label = QtWidgets.QLabel()
-        icon_label.setPixmap(self.load_colored_svg(icon, CONFIG.colors.icon_color))
+        icon_label.setObjectName("SongIconLabel")
+        icon_label.setPixmap(load_colored_svg(icon, CONFIG.style.colors.text_color))
         layout.addWidget(icon_label)
 
         vbox = QtWidgets.QVBoxLayout()
@@ -26,42 +30,40 @@ class SongRow(QtWidgets.QWidget):
         value_label.setObjectName("SongValueLabel")
         vbox.addWidget(value_label)
 
+        hbox = QtWidgets.QHBoxLayout()
+        hbox.setAlignment(QtCore.Qt.AlignmentFlag.AlignVCenter)
+        vbox.addLayout(hbox)
+
         description_label = QtWidgets.QLabel(description)
         description_label.setObjectName("SongDescriptionLabel")
-        vbox.addWidget(description_label)
+        hbox.addWidget(description_label)
+
+        hbox.addStretch()
+
+        if plays > 0:
+            icon = QtWidgets.QLabel()
+            icon.setObjectName("SongIconLabel")
+            icon.setPixmap(load_colored_svg(CONFIG.icons.charts_plays_icon, CONFIG.style.colors.text_color))
+            hbox.addWidget(icon)
+
+            plays_amount = QtWidgets.QLabel(str(plays))
+            plays_amount.setObjectName("SongDescriptionLabel")
+            hbox.addWidget(plays_amount)
+            layout.addLayout(hbox)
 
         layout.addLayout(vbox)
-
-    def load_colored_svg(self, svg_path: str, color: str) -> QtGui.QPixmap:
-        """Load and color an SVG, returning a QPixmap."""
-        # Read SVG data
-        with open(svg_path, "rb") as file:
-            svg_data = file.read()
-
-        # Replace color in SVG
-        svg_data = svg_data.replace(b'fill="#000000"', f'fill="{color}"'.encode())
-
-        # Render the modified SVG
-        svg_renderer = QtSvg.QSvgRenderer(QtCore.QByteArray(svg_data))
-        image = QtGui.QPixmap(QtCore.QSize(self.ICON_SIZE, self.ICON_SIZE))  # Set the size as needed
-        image.fill(QtCore.Qt.GlobalColor.transparent)
-        painter = QtGui.QPainter(image)
-        svg_renderer.render(painter)
-        painter.end()
-
-        return image
 
 
 class SongWidget(QtWidgets.QGroupBox):
     clicked = QtCore.pyqtSignal()
 
-    def __init__(self, index: int, song: Song, language: LanguageConfig):
+    def __init__(self, index: int, song: Song, show_plays: bool = False):
         super().__init__()
         self.setObjectName("SongWidget")
 
         self.index = index
         self.song = song
-        self.language = language
+        self.show_plays = show_plays
 
         self._build_ui()
         self.setMouseTracking(True)
@@ -69,15 +71,22 @@ class SongWidget(QtWidgets.QGroupBox):
     def _build_ui(self):
         layout = QtWidgets.QVBoxLayout(self)
 
-        song_icon = os.path.join(os.getcwd(), CONFIG.general.song_icon)
-        self.song_widget = SongRow(song_icon, self.language.quick_selection_song_description, self.song.title)
+        song_icon = os.path.join(os.getcwd(), CONFIG.icons.song_icon)
+        self.song_widget = SongRow(
+            song_icon,
+            CONFIG.selected_language.classics_song_description,
+            self.song.title,
+        )
         layout.addWidget(self.song_widget)
 
-        artist_icon = os.path.join(os.getcwd(), CONFIG.general.artist_icon)
-        self.artist_widget = SongRow(artist_icon, self.language.quick_selection_artist_description, self.song.artist)
+        artist_icon = os.path.join(os.getcwd(), CONFIG.icons.artist_icon)
+        self.artist_widget = SongRow(
+            artist_icon,
+            CONFIG.selected_language.classics_artist_description,
+            self.song.artist,
+            plays=self.song.plays
+        )
         layout.addWidget(self.artist_widget)
-
-
 
     def _set_title(self):
         title = f"# {self.index}"
@@ -86,15 +95,70 @@ class SongWidget(QtWidgets.QGroupBox):
     def event(self, event: QtCore.QEvent) -> bool:
         """Custom event handling to manage hover and click events."""
         if event.type() == QtCore.QEvent.Type.Enter:
-            self.setStyleSheet(f"QGroupBox{{background-color: {CONFIG.colors.highlight};}}")
+            self.setStyleSheet(
+                "QGroupBox {"
+                + f"border-right: 6px solid {CONFIG.style.colors.off_accent};"
+                + f"border-bottom: 6px solid {CONFIG.style.colors.off_accent};"
+                + "}"
+            )
         elif event.type() == QtCore.QEvent.Type.Leave:
-            self.setStyleSheet(f"QGroupBox{{background-color: {CONFIG.colors.accent};}}")
+            self.setStyleSheet(
+                "QGroupBox { "
+                + f"border-right:  4px solid {CONFIG.style.colors.off_accent};"
+                + f"border-bottom: 4px solid {CONFIG.style.colors.off_accent};"
+                + " }"
+            )
         return super().event(event)
 
     def mousePressEvent(self, event):
         """Emit the clicked signal when the group box is clicked."""
         self.clicked.emit()
         return super().mousePressEvent(event)
+
+
+class SongsListWidget(QtWidgets.QWidget):
+    song_selected = QtCore.pyqtSignal(Song)
+
+    MAX_COLS = 3
+
+    def __init__(self, chart_list: list[Song], show_plays: bool = False):
+        super().__init__()
+        self.charts = chart_list
+        self._song_widgets = []
+        self.show_plays = show_plays
+        self.setObjectName("SongListWidget")
+
+        self._build_ui()
+
+    def _build_ui(self):
+        main_lay = QtWidgets.QVBoxLayout(self)
+        main_lay.setContentsMargins(48, 32, 48, 32)
+        scroll_area = QtWidgets.QScrollArea()
+        w = QtWidgets.QWidget()
+        w.setObjectName("SongListWidget")
+        scroll_area.setWidget(w)
+
+        main_lay.addWidget(scroll_area)
+
+        layout = QtWidgets.QGridLayout(w)
+        for index, song in enumerate(self.charts, 1):
+            song_widget = SongWidget(index, song, show_plays=self.show_plays)
+            song_widget.clicked.connect(self._on_song_selected)
+            song_amount = len(self._song_widgets)
+
+            layout.addWidget(
+                song_widget, song_amount // self.MAX_COLS, song_amount % self.MAX_COLS
+            )
+            self._song_widgets.append(song_widget)
+
+        scroll_area.setWidgetResizable(True)
+
+    @QtCore.pyqtSlot()
+    def _on_song_selected(self):
+        sender: SongWidget = self.sender()
+
+        selected_song = sender.song
+        self.song_selected.emit(selected_song)
 
 
 class QuickSelectionDialog(QtWidgets.QDialog):
@@ -105,9 +169,11 @@ class QuickSelectionDialog(QtWidgets.QDialog):
 
         self.setObjectName("QuickSelectionDialog")
 
+        self.charts_manager = ChartsManager(CONFIG.general.charts_file)
+
         self._selected_song = None
         self.language = language
-        self.songs = QUICK_SELECTION_SONGS
+        self.songs = CLASSICS_SONGS
         self._song_widgets = []
 
         self.setFixedWidth(1200)
@@ -124,36 +190,32 @@ class QuickSelectionDialog(QtWidgets.QDialog):
     def selected_song(self) -> Song | None:
         return self._selected_song
 
+    def load_charts(self) -> list[Song]:
+        return self.charts_manager.get_charts_list()
+
     def _build_ui(self):
-        main_lay = QtWidgets.QVBoxLayout(self)
-        main_lay.setContentsMargins(48, 32, 48, 32)
-        scroll_area = QtWidgets.QScrollArea()
-        w = QtWidgets.QWidget()
-        scroll_area.setWidget(w)
+        layout = QtWidgets.QVBoxLayout(self)
 
-        main_lay.addWidget(scroll_area)
+        self.tab = QtWidgets.QTabWidget()
+        layout.addWidget(self.tab)
 
-        layout = QtWidgets.QGridLayout(w)
-        for index, song in enumerate(self.songs, 1):
-            song_widget = SongWidget(index, song, self.language)
-            song_widget.clicked.connect(self._on_song_selected)
-            song_amount = len(self._song_widgets)
+        self.classics_widget = SongsListWidget(CLASSICS_SONGS)
+        self.classics_widget.song_selected.connect(self._on_song_selected)
+        self.tab.addTab(self.classics_widget, "[Classics]")
 
-            layout.addWidget(song_widget, song_amount // self.MAX_COLS, song_amount % self.MAX_COLS)
-            self._song_widgets.append(song_widget)
+        self.charts_widget = SongsListWidget(self.load_charts(), show_plays=True)
+        self.charts_widget.song_selected.connect(self._on_song_selected)
+        self.tab.addTab(self.charts_widget, "[Charts]")
+
+        self.charts_widget = SongsListWidget(CURRENT_CHARTS_SONGS)
+        self.charts_widget.song_selected.connect(self._on_song_selected)
+        self.tab.addTab(self.charts_widget, "[Radio]")
 
         close_button = Button("Close")
         close_button.clicked.connect(self.close)
-        main_lay.addWidget(close_button)
+        layout.addWidget(close_button)
 
-        scroll_area.setWidgetResizable(True)
-
-    @QtCore.pyqtSlot()
-    def _on_song_selected(self):
-        sender: SongWidget = self.sender()
-
-        self._selected_song = sender.song
+    @QtCore.pyqtSlot(Song)
+    def _on_song_selected(self, song: Song):
+        self._selected_song = song
         self.accept()
-
-
-

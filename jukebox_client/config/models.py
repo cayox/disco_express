@@ -1,20 +1,25 @@
 from pydantic import BaseModel
+from typing import Optional
 
 
 class Song(BaseModel):
     title: str
     artist: str
+    plays: int = 0
 
 
 class ColorsConfig(BaseModel):
     background_color: str
     text_color: str
+    accent: str
+    accent_glow: str
+    off_accent: str
+    highlight_glow: str
     highlight: str
+    off_highlight: str
     icon_color: str
 
     yellow: str
-    accent: str
-    cream: str
     gray: str
     white: str
 
@@ -23,9 +28,22 @@ class ColorsConfig(BaseModel):
     disabled_dark: str
 
 
+class StyleConfig(BaseModel):
+    background_image: str
+    colors: ColorsConfig
+    ui_glow_strength: int
+    text_glow_strength: int
+
 class LanguageConfig(BaseModel):
     language_name: str
     language_icon: str
+
+    heading_music_wish: str
+    heading_home: str
+    heading_information: str
+
+    home_info_btn: str
+    home_music_wish_btn: str
 
     music_title: str
     music_interpret: str
@@ -34,7 +52,6 @@ class LanguageConfig(BaseModel):
     music_message: str
 
     btn_quick_selection: str
-    btn_info: str
     btn_send: str
 
     error_no_title: str
@@ -44,10 +61,13 @@ class LanguageConfig(BaseModel):
     error_network: str
     error_no_connection_to_server: str
 
-    quick_selection_artist_description: str
-    quick_selection_song_description: str
+    classics_artist_description: str
+    classics_song_description: str
 
-    document_names: list[str]
+    loading_description: list[str]
+    loading_success: str
+
+    rotating_banner: str
 
 
 class NetworkConfig(BaseModel):
@@ -55,23 +75,38 @@ class NetworkConfig(BaseModel):
     server_port: int
 
 
-class GeneralConfig(BaseModel):
-    debug: bool
-    app_name: str
-    quick_selection_file: str
-    slurs_file: str
-    documents: list[str]
-
-    auto_close_time: int
-    server_refresh_interval: int
-
+class IconsConfig(BaseModel):
     artist_icon: str
     song_icon: str
     file_icon: str
+    error_icon: str
+    home_icon: str
+    charts_plays_icon: str
+    unavailable_icon: str
+
+
+class GeneralConfig(BaseModel):
+    debug: bool
+    app_name: str
+
+    classics_file: str
+    charts_file: str
+    slurs_file: str
+    current_charts: str
+
+    documents_directory: str
+    log_directory: str
+
+    auto_close_time: int
+    server_refresh_interval: int
+    wish_sending_time: int
+    banner_speed: int
 
 
 class Config(BaseModel):
     general: GeneralConfig
-    colors: ColorsConfig
+    icons: IconsConfig
+    style: StyleConfig
     languages: list[LanguageConfig]
     network: NetworkConfig
+    selected_language: Optional[LanguageConfig] = None

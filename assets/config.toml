@@ -1,22 +1,34 @@
 [general]
 debug = true
-
 app_name = "Disco Express"
-quick_selection_file = "assets/data/quick_selection.csv"
+
+classics_file = "assets/data/classics.csv"
+charts_file = "assets/data/charts.csv"
+current_charts = "assets/data/current_charts.csv"
 slurs_file = "assets/data/slurs.txt"
+
+log_directory = "logs" # relative to apps execution directory
 
 auto_close_time = 600  # in seconds
 server_refresh_interval = 10  # in seconds
-
-######### ICONS
-artist_icon = "assets/icons/artist.svg"
-song_icon = "assets/icons/song.svg"
-file_icon = "assets/icons/file.svg"
+wish_sending_time = 10 # in seconds
+banner_speed = 100 # in millisekunden: interval in welchem das banner um einen Buschstaben weiter rückt
 
 ######### DOCUMENTS
 
 # Wenn hier ein Pfad geändert wird muss auch bei jeder Sprache der Name des entsprechenden Dokuments geändert werden
-documents = ["assets/documents/Fiverr Inbox Attachment.jpeg", "assets/documents/Musikwunsch status.pdf"]
+documents_directory = "assets/documents"
+
+######### ICONS
+
+[icons]
+artist_icon = "assets/icons/artist.svg"
+song_icon = "assets/icons/song.svg"
+file_icon = "assets/icons/file.svg"
+error_icon = "assets/icons/error.svg"
+home_icon = "assets/icons/home.svg"
+charts_plays_icon = "assets/icons/chart.svg"
+unavailable_icon = "assets/icons/unavailable.svg"
 
 ######### NETWORK
 
@@ -25,18 +37,26 @@ server_ip = "localhost"
 server_port = 8080
 
 ######### COLORS
+[style]
+background_image = "assets/img/background5.jpg"
+# background_image = ""
+ui_glow_strength = 256
+text_glow_strength = 256
 
-[colors]
+[style.colors]
 background_color = "#f5ebe0"
-text_color = "#001219"
-accent = "#0a9396"
-highlight = "#ae2012"
+text_color = "#5DCAE6"
+accent_glow = "#5DCAE6"
+accent = "#338a9f"
+off_accent = "#1F677A"
+highlight_glow = "#FF5900"
+highlight = "#ba361d"
+off_highlight = "#913623"
 icon_color = "#f5ebe0"
 
-yellow = "#ee9b00"
-cream = "#e9d8a6"
+yellow = "#ebc87b"
 gray = "#C0C0C0"
-white = "#f5ebe0"
+white = "#FFB6A7"
 
 disabled_light = "#ced4da"
 disabled = "#adb5bd"
@@ -48,6 +68,13 @@ disabled_dark = "#6c757d"
 language_name = "german"
 language_icon = "assets/icons/de.svg"
 
+heading_music_wish = "Geben Sie einen Musikwunsch an. Sie können diesen Musikwunsch auch an eine Person richten!"
+heading_home = "Willkommen beim Disco Express. Hier können Sie sich ein Lied wünschen oder Informationen zum Fahrgeschäft erhalten."
+heading_information = "Wählen Sie eines der Dokumente um mehr zu erfahren."
+
+home_info_btn = "Information"
+home_music_wish_btn = "Musik Wunsch"
+
 music_title = "Musik Titel"
 music_interpret = "Interpret"
 music_sender = "Von"
@@ -55,7 +82,6 @@ music_receiver = "Für"
 music_message = "Nachricht"
 
 btn_quick_selection = "Schnelle Auswahl"
-btn_info = "Information"
 btn_send = "Anfrage Senden"
 
 error_no_title = "Kein Titel angegeben!"
@@ -65,16 +91,25 @@ error_dj_unavailable = "Der DJ nimmt momentan keine neuen Musikwünsche an. Bitt
 error_network = "Anfrage konnte nicht gesendet werden! Bitte wende dich an einen Admin"
 error_no_connection_to_server = "Server unerreichbar! Bitte kontaktieren Sie einen Administrator"
 
-quick_selection_artist_description = "Interpret"
-quick_selection_song_description = "Musik Titel"
+classics_artist_description = "Interpret"
+classics_song_description = "Musik Titel"
 
-# Reihenfolge hier gleiche Reihenfolge wie oben unter "documents"
-document_names = ["Dokument 1", "Dokument 2"]
+loading_description = ["Suche CD heraus ...", "Lege CD ein ...", "Packe deinen Song in die Warteschlange ..."]
+loading_success = "Musikwunsch erfolgreich versendet!"
+
+rotating_banner = "5€ pro Ticket --- Sende einen Musikwunsch an einen Freund oder Geliebten --- Heute nur bis 18:00 Uhr --- "
 
 [[languages]]
 language_name = "english"
 language_icon = "assets/icons/gb.svg"
 app_name = "Disco Express"
+
+heading_music_wish = "Enter a music wish. You can also direct this wish to someone!"
+heading_home = "Welcome to the Disco Express, make a music wish or retrieve some infotmation about us!"
+heading_information = "Choose a document to learn more."
+
+home_info_btn = "Information"
+home_music_wish_btn = "Music Wish"
 
 music_title = "Music Title"
 music_interpret = "Artist"
@@ -83,7 +118,6 @@ music_receiver = "For"
 music_message = "Message"
 
 btn_quick_selection = "Quick Selection"
-btn_info = "Info"
 btn_send = "Send Request"
 
 error_no_title = "No Title entered!"
@@ -93,7 +127,10 @@ error_dj_unavailable = "The DJ does currently not accept wishes. Please try late
 error_network = "Request could not be sent! Please refer to an Admin"
 error_no_connection_to_server = "Server unavailable! Please contact an Admin"
 
-quick_selection_artist_description = "Artist"
-quick_selection_song_description = "Music Title"
+classics_artist_description = "Artist"
+classics_song_description = "Music Title"
 
-document_names = ["Document 1", "Document 2"]
+loading_description = ["Finding Disc ...", "Inserting Disc ...", "Putting song in queue ..."]
+loading_success = "Your music wish was sent sucessfully!"
+
+rotating_banner = "5€ per Ticket --- Send a music wish to a friend or loved one --- Today we are only open until 18:00 --- "
