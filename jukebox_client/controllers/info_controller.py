@@ -35,10 +35,14 @@ class InfoController(Controller[InfoView]):
 
     @QtCore.pyqtSlot()
     def refresh_docs(self):
-        shutil.rmtree(CONFIG.general.documents_directory)
-        os.makedirs(CONFIG.general.documents_directory)
-        documents = self.jukebox_client.list_documents()
-        for doc in documents:
-            self.jukebox_client.get_document(doc)
+        try:
+            documents = self.jukebox_client.list_documents()
 
-        self.view.list_documents()
+            shutil.rmtree(CONFIG.general.documents_directory)
+            os.makedirs(CONFIG.general.documents_directory)
+            for doc in documents:
+                self.jukebox_client.get_document(doc)
+        except JukeBoxConnectionError:
+            pass
+        finally:
+            self.view.list_documents()

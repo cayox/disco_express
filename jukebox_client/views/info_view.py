@@ -3,7 +3,7 @@ import os.path
 from PyQt6 import QtWidgets, QtCore, QtGui, QtSvg
 from jukebox_client.config import CONFIG
 from jukebox_client.config.models import LanguageConfig
-from jukebox_client.views.widgets import Button, SubHeaderLabel
+from jukebox_client.views.widgets import Button, SubHeaderLabel, build_accent_glow_effect
 from .view import View
 from .helpers import load_colored_svg
 
@@ -45,25 +45,28 @@ class ImageViewer(QtWidgets.QDialog):
         scroll_area.setWidgetResizable(True)
 
 
-class DocumentWidget(Button):
+class DocumentWidget(QtWidgets.QPushButton):
     ICON_SIZE = (36, 48)
 
     def __init__(self, path: str):
         name = os.path.basename(path).split(".")[0]
-        super().__init__(" " * 16 + name)
+        super().__init__(name)
         self.setObjectName("DocumentWidget")
 
-        self.setMinimumWidth(256)
+        self.setGraphicsEffect(build_accent_glow_effect())
+
+        # self.setMinimumWidth(256)
 
         self.path = os.path.join(os.getcwd(), path)
         self.name = name
 
-        self.setIcon(
-            QtGui.QIcon(
-                load_colored_svg(CONFIG.icons.file_icon, CONFIG.style.colors.text_color)
-            )
-        )
-        self.setIconSize(QtCore.QSize(*self.ICON_SIZE))
+        # self.setIcon(
+        #     QtGui.QIcon(
+        #         load_colored_svg(CONFIG.icons.file_icon, CONFIG.style.colors.text_color)
+        #     )
+        # )
+        # self.setIconSize(QtCore.QSize(*self.ICON_SIZE))
+
 
 
 class InfoView(View):

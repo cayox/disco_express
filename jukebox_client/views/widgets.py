@@ -245,6 +245,7 @@ class StatusWidget(QtWidgets.QWidget):
 
     def __init__(self, visible: bool = False):
         super().__init__()
+        self.setObjectName("StatusWidget")
 
         text = CONFIG.selected_language.error_no_connection_to_server
 
@@ -255,13 +256,16 @@ class StatusWidget(QtWidgets.QWidget):
         layout.addStretch()
 
         self.icon_label1 = QtWidgets.QLabel()
+        self.icon_label1.setObjectName("StatusWidget")
         layout.addWidget(self.icon_label1)
 
         self.label = GlowLabel(text)
         self.label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.label.setObjectName("StatusWidget")
         layout.addWidget(self.label)
 
         self.icon_label2 = QtWidgets.QLabel()
+        self.icon_label2.setObjectName("StatusWidget")
         layout.addWidget(self.icon_label2)
 
         layout.addStretch()

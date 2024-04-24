@@ -19,8 +19,6 @@ class ColorsConfig(BaseModel):
     off_highlight: str
     icon_color: str
 
-    yellow: str
-    gray: str
     white: str
 
     disabled_light: str

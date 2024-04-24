@@ -39,9 +39,9 @@ server_port = 8080
 ######### COLORS
 [style]
 background_image = "assets/img/background5.jpg"
-# background_image = ""
-ui_glow_strength = 256
-text_glow_strength = 256
+# je stärker der glow (neon) desto schlechter ist die performance
+ui_glow_strength = 128
+text_glow_strength = 128
 
 [style.colors]
 background_color = "#f5ebe0"
@@ -54,9 +54,7 @@ highlight = "#ba361d"
 off_highlight = "#913623"
 icon_color = "#f5ebe0"
 
-yellow = "#ebc87b"
-gray = "#C0C0C0"
-white = "#FFB6A7"
+white = "#f5ebe0"
 
 disabled_light = "#ced4da"
 disabled = "#adb5bd"

@@ -14,6 +14,12 @@ QWidget#InfoView, QWidget#HomeView {
     background-color: transparent;
 }
 
+QWidget#StatusWidget{
+    background-color: transparent;
+    border: none;
+    color: %highlight%;
+}
+
 QDialog {
     background-color: %background_color%;
 }
@@ -54,7 +60,7 @@ QTabBar::tab:selected {
 }
 
 QProgressBar {
-    border: 2px solid %gray%;
+    border: 2px solid %glow_highlight%;
     border-radius: 5px;
     background-color: %disabled_light%;
 }
@@ -140,7 +146,7 @@ QGroupBox#MusicWishWidget:disabled {
 
 QLabel {
     background-color: %highlight%;
-    color: %background_color%;
+    color: %white%;
     border: 2px solid %white%;
     border-radius: 16px;
     padding: 16px;
@@ -177,6 +183,12 @@ QLabel#HeaderLabel {
     padding: 0px;
 }
 
+QLabel#SubHeaderLabel {
+    color: %white%;
+    font-size: 32px;
+    margin: 32px;
+}
+
 QLabel#TimeWidget{
     font-size: 32px;
     color: %highlight%;
@@ -196,7 +208,8 @@ QLabel#Title {
 
 QLabel#RotatingLabel {
     font-size: 32px;
-    color: %highlight_glow%;
+    color: %white%;
+    margin-bottom: 32px;
 }
 
 QLineEdit {
@@ -303,15 +316,11 @@ QLabel#SongIconLabel {
     padding: 0px;
 }
 
-QLabel#SubHeaderLabel {
-    color: %highlight_glow%;
-    font-size: 32px;
-}
-
 QPushButton#DocumentWidget {
     border-radius: 8px;
     font-size: 32px;
     font-family: 'Retosta';
+    padding: 16px;
 }
 
 QLabel#LoadingLabel, QLabel#LoadingSuccessLabel {
