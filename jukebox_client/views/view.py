@@ -1,5 +1,4 @@
 from PyQt6 import QtWidgets
-from jukebox_client.config.models import LanguageConfig
 
 
 class View(QtWidgets.QWidget):

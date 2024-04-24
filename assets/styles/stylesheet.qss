@@ -60,7 +60,7 @@ QTabBar::tab:selected {
 }
 
 QProgressBar {
-    border: 2px solid %glow_highlight%;
+    border: 2px solid %highlight_glow%;
     border-radius: 5px;
     background-color: %disabled_light%;
 }

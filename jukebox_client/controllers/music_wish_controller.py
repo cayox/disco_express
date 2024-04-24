@@ -1,18 +1,22 @@
-from jukebox_client.views import MainView, QuickSelectionDialog, InfoView
-from PyQt6 import QtCore, QtWidgets
+import logging
+import sys
+
+import requests.exceptions
+from PyQt6 import QtCore
+
 from jukebox_client.config import CONFIG, contains_slur
 from jukebox_client.config.models import Song
 from jukebox_client.models import (
-    JukeBoxClient,
-    MusicRequest,
-    JukeBoxConnectionError,
     ChartsManager,
+    JukeBoxClient,
+    JukeBoxConnectionError,
+    MusicRequest,
 )
 from jukebox_client.models.jukebox_client import ServerStatus
+from jukebox_client.views import MusicWishView, QuickSelectionDialog
 from jukebox_client.views.widgets import LoadingModal
-import logging
+
 from .controller import Controller
-from jukebox_client.views import MusicWishView
 
 
 class MusicController(Controller[MusicWishView]):
@@ -22,7 +26,8 @@ class MusicController(Controller[MusicWishView]):
         super().__init__(MusicWishView)
 
         self._client = JukeBoxClient(
-            CONFIG.network.server_ip, CONFIG.network.server_port
+            CONFIG.network.server_ip,
+            CONFIG.network.server_port,
         )
 
         self.chart_manager = ChartsManager(CONFIG.general.charts_file)
@@ -38,23 +43,21 @@ class MusicController(Controller[MusicWishView]):
     @QtCore.pyqtSlot()
     def set_selected_language(self):
         language = self.get_language()
-        logging.info(f"Setting language: {language.language_name}")
 
         self.view.music_wish_widget.music_title.set_descriptor_text(
-            language.music_title
+            language.music_title,
         )
         self.view.music_wish_widget.artist.set_descriptor_text(language.music_interpret)
         self.view.music_wish_widget.sender_name.set_descriptor_text(
-            language.music_sender
+            language.music_sender,
         )
         self.view.music_wish_widget.receiver_name.set_descriptor_text(
-            language.music_receiver
+            language.music_receiver,
         )
         self.view.music_wish_widget.message.set_descriptor_text(language.music_message)
 
         self.view.send_button.setText(language.btn_send)
         self.view.quick_select_button.setText(language.btn_quick_selection)
-
 
         self.view.sub_heading.setText(language.heading_music_wish)
 
@@ -101,9 +104,8 @@ class MusicController(Controller[MusicWishView]):
 
         try:
             error = self._client.send_music_request(music_request)
-        except JukeBoxConnectionError as e:
-            if CONFIG.general.debug:
-                raise e
+        except JukeBoxConnectionError:
+            logging.exception("Cannot send music request")
             self.show_error("Cannot reach the Jukebox Server. Please inform an Admin!")
             return
 
@@ -131,10 +133,13 @@ class MusicController(Controller[MusicWishView]):
         try:
             status = self._client.get_status()
             self.set_connection_status(status)
-        except Exception:
+        except requests.exceptions.ConnectionError:
             self.set_connection_status(ServerStatus.ERROR)
 
     def set_connection_status(self, status: ServerStatus):
+        if status == ServerStatus.SHUTDOWN:
+            sys.exit(0)
+
         enabled = status == ServerStatus.OK
         self.view.music_wish_widget.setEnabled(enabled)
         self.view.send_button.setEnabled(enabled)
@@ -145,9 +150,10 @@ class MusicController(Controller[MusicWishView]):
         self.view.music_wish_widget.status_widget.set_status(status)
 
     def check_profanity(self, music_request: MusicRequest) -> str | None:
-        for key, text in music_request.dict().items():
+        for text in music_request.dict().values():
 
             if text is None or not contains_slur(text):
                 continue
-            logging.info(f"Slur found in '{text}'")
+            logging.info("Slur found in '%s'", text)
             return self.get_language().error_slur_found.format(text)
+        return None

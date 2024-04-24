@@ -1,22 +1,24 @@
+import logging
 import os.path
+from enum import Enum
+from typing import Any
 
 import requests
-from typing import Any
 from pydantic import BaseModel
-import logging
-from enum import Enum
-from jukebox_client.config import CONFIG
 
+from jukebox_client.config import CONFIG
 
 
 class JukeBoxConnectionError(Exception):
     """Error indicating the Jukebox Server cannot be reached."""
+
 
 class ServerStatus(Enum):
     OK = "OK"
     UNAVAILABLE = "UNAVAILABLE"
     SHUTDOWN = "SHUTDOWN"
     ERROR = "ERROR"
+
 
 class MusicRequest(BaseModel):
     title: str
@@ -31,8 +33,11 @@ class JukeBoxError(BaseModel):
     error: str
 
 
+HTTP_OK_RANGE = 200, 299
+
+
 def status_ok(status: int) -> bool:
-    return 200 <= status <= 299
+    return HTTP_OK_RANGE[0] <= status <= HTTP_OK_RANGE[1]
 
 
 class JukeBoxClient:
@@ -41,34 +46,39 @@ class JukeBoxClient:
         self.port = port
 
     def request(
-        self, method: str, uri: str, data: dict[str, Any] or None = None
+        self,
+        method: str,
+        uri: str,
+        data: dict[str, Any] or None = None,
     ) -> tuple[requests.Response | None, JukeBoxError | None]:
         uri = f"http://{self.address}:{self.port}/{uri if not uri.startswith('/') else uri[1:]}"
 
         headers = {"Content-Type": "application/json"}
-        logging.debug(f"Sending to {uri} this data: {data}")
+        logging.debug("Sending to %s this data: %s", uri, data)
         try:
             response = requests.request(method, uri, json=data, headers=headers)
         except requests.exceptions.ConnectionError as exc:
-            raise JukeBoxConnectionError(str(exc))
+            raise JukeBoxConnectionError(str(exc)) from exc
         if status_ok(response.status_code):
             return response, None
 
         body = response.json()
-        logging.debug(f"Request unsucessful: ({response.status_code}) {body}")
+        logging.debug("Request unsucessful: (%s) %s", response.status_code, body)
         error_msg = body.get("error", body.get("detail", str(body)))
-        return None, JukeBoxError(**dict(status=response.status_code, error=error_msg))
+        return None, JukeBoxError(status=response.status_code, error=error_msg)
 
     def send_music_request(self, music_request: MusicRequest) -> None | JukeBoxError:
-        logging.info(f"Requesting Music: {music_request}", music_request)
+        logging.info("Requesting Music: %s", music_request)
         try:
             response, err = self.request(
-                "POST", "/music_wish", data=music_request.dict()
+                "POST",
+                "/music_wish",
+                data=music_request.dict(),
             )
             if err is not None:
                 return err
         except requests.exceptions.ConnectionError as exc:
-            raise JukeBoxConnectionError(str(exc))
+            raise JukeBoxConnectionError(str(exc)) from exc
 
     def get_status(self) -> ServerStatus:
         response, err = self.request("GET", "/status")
@@ -92,5 +102,5 @@ class JukeBoxClient:
         save_path = os.path.join(CONFIG.general.documents_directory, doc_name)
         with open(save_path, "wb") as file:
             file.write(response.content)
-        logging.info(f"Downloaded '{doc_name}' successfully.")
+        logging.info("Downloaded '%s' successfully.", doc_name)
         return save_path

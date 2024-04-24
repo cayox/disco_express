@@ -1,16 +1,15 @@
 import os
 
-from PyQt6 import QtWidgets, QtCore, QtGui
-from jukebox_client.views.widgets import (
-    TitleLabel,
-    TimeWidget,
-    MusicWishWidget,
-    LanguageSwitch,
-    Button,
-    IconButton,
-)
-from .view import View
+from PyQt6 import QtCore, QtGui, QtWidgets
+
 from jukebox_client.config import CONFIG
+from jukebox_client.views.widgets import (
+    IconButton,
+    TimeWidget,
+    TitleLabel,
+)
+
+from .view import View
 
 
 class MainView(QtWidgets.QWidget):
@@ -20,17 +19,18 @@ class MainView(QtWidgets.QWidget):
 
         self._build_ui()
         self.background = QtGui.QPixmap(
-            os.path.join(os.getcwd(), CONFIG.style.background_image)
+            os.path.join(os.getcwd(), CONFIG.style.background_image),
         )
+        self.setWindowFlags(QtCore.Qt.WindowType.FramelessWindowHint)
 
-    def paintEvent(self, event) -> None:
+    def paintEvent(self, event: QtGui.QPaintEvent):  # noqa: N802, ARG002, inherited
         painter = QtGui.QPainter(self)
         painter.drawPixmap(self.rect(), self.background)
 
     def _build_ui(self):
         layout = QtWidgets.QVBoxLayout()
         layout.setAlignment(
-            QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignTop
+            QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignTop,
         )
         self.setLayout(layout)
 
@@ -38,7 +38,9 @@ class MainView(QtWidgets.QWidget):
         layout.addLayout(header_layout)
 
         self.home_button = IconButton(
-            CONFIG.icons.home_icon, CONFIG.style.colors.text_color, 128
+            CONFIG.icons.home_icon,
+            CONFIG.style.colors.text_color,
+            128,
         )
         header_layout.addWidget(self.home_button)
 
@@ -61,3 +63,7 @@ class MainView(QtWidgets.QWidget):
     def add_page(self, page: View) -> int:
         self.stack.addWidget(page)
         return self.stack.count() - 1
+
+    def closeEvent(self, event: QtGui.QCloseEvent):  # noqa: N802, inherited
+        """Override the close event to prevent closing."""
+        event.ignore()  # Ignore the close event

@@ -1,7 +1,8 @@
 import os
-from jukebox_client.config import CONFIG, load_songs_from_csv
-from jukebox_client.config.models import Song
+
 import pandas as pd
+
+from jukebox_client.config.models import Song
 
 HEADER = ["Title", "Artist", "Plays"]
 
@@ -21,7 +22,11 @@ class ChartsManager:
         out = []
         for _, chart in charts.iterrows():
             out.append(
-                Song(title=chart["Title"], artist=chart["Artist"], plays=chart["Plays"])
+                Song(
+                    title=chart["Title"],
+                    artist=chart["Artist"],
+                    plays=chart["Plays"],
+                ),
             )
 
         return out

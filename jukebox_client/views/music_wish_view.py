@@ -1,7 +1,9 @@
-from PyQt6 import QtWidgets, QtCore, QtGui
-from jukebox_client.views.widgets import MusicWishWidget, Button, SubHeaderLabel
-from .view import View
+from PyQt6 import QtWidgets
+
 from jukebox_client.config import CONFIG
+from jukebox_client.views.widgets import Button, MusicWishWidget, SubHeaderLabel
+
+from .view import View
 
 
 class MusicWishView(View):

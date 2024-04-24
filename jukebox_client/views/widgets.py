@@ -1,11 +1,15 @@
 import datetime
 import os
+from typing import Any
 
-from PyQt6 import QtWidgets, QtCore, QtGui, QtSvg
+from PyQt6 import QtCore, QtGui, QtWidgets
+
 from jukebox_client.config import CONFIG
-from jukebox_client.models.jukebox_client import ServerStatus
 from jukebox_client.config.models import LanguageConfig
+from jukebox_client.models.jukebox_client import ServerStatus
+
 from .helpers import load_colored_svg
+
 
 def build_accent_glow_effect() -> QtWidgets.QGraphicsDropShadowEffect:
     effect = QtWidgets.QGraphicsDropShadowEffect()
@@ -13,6 +17,7 @@ def build_accent_glow_effect() -> QtWidgets.QGraphicsDropShadowEffect:
     effect.setBlurRadius(CONFIG.style.ui_glow_strength)
     effect.setColor(QtGui.QColor(CONFIG.style.colors.accent_glow))
     return effect
+
 
 def build_highlight_glow_effect() -> QtWidgets.QGraphicsDropShadowEffect:
     effect = QtWidgets.QGraphicsDropShadowEffect()
@@ -23,14 +28,14 @@ def build_highlight_glow_effect() -> QtWidgets.QGraphicsDropShadowEffect:
 
 
 class GlowLabel(QtWidgets.QLabel):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: Any, **kwargs: Any):
         super().__init__(*args, **kwargs)
 
         self.setGraphicsEffect(build_highlight_glow_effect())
 
 
 class SubHeaderLabel(GlowLabel):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: Any, **kwargs: Any):
         super().__init__(*args, **kwargs)
 
         self.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
@@ -54,12 +59,12 @@ class Button(QtWidgets.QPushButton):
 
         self.setGraphicsEffect(build_accent_glow_effect())
 
-    def setText(self, text):
+    def setText(self, text: str):  # noqa: N802
         super().setText(f"<{text}>")
 
 
 class HeaderLabel(GlowLabel):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: Any, **kwargs: Any):
         super().__init__(*args, **kwargs)
         self.setObjectName("HeaderLabel")
 
@@ -78,8 +83,8 @@ class TimeWidget(HeaderLabel):
         self,
         timer_interval: int = 60_000,
         time_format: str | None = None,
-        *args,
-        **kwargs,
+        *args: Any,
+        **kwargs: Any,
     ):
         super().__init__(*args, **kwargs)
 
@@ -105,18 +110,21 @@ class TimeWidget(HeaderLabel):
 
 
 class MusicEntryDescriptor(QtWidgets.QLabel):
-    def setText(self, a0):
+    def setText(self, a0: str):  # noqa: N802
         super().setText(f"|{a0}¬")
         self.setObjectName("MusicEntryDescriptor")
         self.setMinimumWidth(196)
         self.setAlignment(
-            QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter
+            QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter,
         )
 
 
 class MusicEntry(QtWidgets.QWidget):
     def __init__(
-        self, description: str, example: str | None = None, text: str | None = None
+        self,
+        description: str,
+        example: str | None = None,
+        text: str | None = None,
     ):
         super().__init__()
 
@@ -138,7 +146,7 @@ class MusicEntry(QtWidgets.QWidget):
     def text(self) -> str | None:
         return self.entry.text() if self.entry.text() else None
 
-    def setText(self, text: str):
+    def setText(self, text: str):  # noqa: N802
         self.entry.setText(text)
 
     def set_descriptor_text(self, text: str):
@@ -158,7 +166,7 @@ class MusicWishWidget(QtWidgets.QGroupBox):
         layout = QtWidgets.QVBoxLayout(self)
 
         self.status_widget = StatusWidget(
-            visible=False
+            visible=False,
         )
         layout.addWidget(self.status_widget)
 
@@ -192,7 +200,7 @@ class LanguageButton(QtWidgets.QPushButton):
         self.setToolTip(language.language_name.capitalize())
 
     @QtCore.pyqtProperty(bool)
-    def highlight(self):
+    def highlight(self) -> bool:
         return self._highlight
 
     @highlight.setter
@@ -206,7 +214,7 @@ class LanguageButton(QtWidgets.QPushButton):
 class LanguageSwitch(QtWidgets.QWidget):
     language_switched = QtCore.pyqtSignal(LanguageConfig)
 
-    def __init__(self, parent=None) -> None:
+    def __init__(self, parent: QtWidgets.QWidget | None = None) -> None:
         super().__init__(parent)
         self.buttons = []
 
@@ -270,7 +278,7 @@ class StatusWidget(QtWidgets.QWidget):
 
         layout.addStretch()
 
-    def setText(self, text: str):
+    def setText(self, text: str):  # noqa: N802
         self.label.setText(text)
 
     def set_status(self, status: ServerStatus):
@@ -278,13 +286,15 @@ class StatusWidget(QtWidgets.QWidget):
             color = CONFIG.style.colors.off_accent
             icon = load_colored_svg(
                 os.path.join(os.getcwd(), CONFIG.icons.unavailable_icon),
-                color
-                )
+                color,
+            )
             text = CONFIG.selected_language.error_dj_unavailable
         elif status == ServerStatus.ERROR:
             color = CONFIG.style.colors.highlight
             icon = load_colored_svg(
-                os.path.join(os.getcwd(), CONFIG.icons.error_icon), color)
+                os.path.join(os.getcwd(), CONFIG.icons.error_icon),
+                color,
+            )
             text = CONFIG.selected_language.error_no_connection_to_server
         else:
             return
@@ -292,11 +302,14 @@ class StatusWidget(QtWidgets.QWidget):
         self.icon_label1.setPixmap(icon)
         self.icon_label2.setPixmap(icon)
         self.label.setText(text)
-        self.label.setStyleSheet(f"""
+        self.label.setStyleSheet(
+            f"""
             QLabel {{
                 color: {color};
                 font-size: 24px;
-            }}""")
+            }}""",
+        )
+
 
 class LoadingModal(QtWidgets.QDialog):
     def __init__(self):
@@ -309,7 +322,7 @@ class LoadingModal(QtWidgets.QDialog):
         self._build_ui()
 
         interval = CONFIG.general.wish_sending_time // len(
-            CONFIG.selected_language.loading_description
+            CONFIG.selected_language.loading_description,
         )
         self.label_timer = QtCore.QTimer()
         self.label_timer.setInterval(interval * 1000)
@@ -340,7 +353,7 @@ class LoadingModal(QtWidgets.QDialog):
         layout.addWidget(self.progress_bar)
 
         self.loading_label = GlowLabel(
-            CONFIG.selected_language.loading_description[self._loading_text_index]
+            CONFIG.selected_language.loading_description[self._loading_text_index],
         )
         self._loading_text_index += 1
         self.loading_label.setObjectName("LoadingLabel")
@@ -354,7 +367,7 @@ class LoadingModal(QtWidgets.QDialog):
     @QtCore.pyqtSlot()
     def _on_label_timer_timeout(self):
         self.loading_label.setText(
-            CONFIG.selected_language.loading_description[self._loading_text_index]
+            CONFIG.selected_language.loading_description[self._loading_text_index],
         )
         if (
             self._loading_text_index

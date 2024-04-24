@@ -1,12 +1,18 @@
 import os.path
 
-from PyQt6 import QtWidgets, QtCore, QtGui, QtSvg
-from jukebox_client.config import CLASSICS_SONGS, Song, CONFIG, CURRENT_CHARTS_SONGS
+from PyQt6 import QtCore, QtGui, QtWidgets
+
+from jukebox_client.config import (
+    CLASSICS_SONGS,
+    CONFIG,
+    CURRENT_CHARTS_SONGS,
+    Song,
+)
 from jukebox_client.config.models import LanguageConfig
-from jukebox_client.views.widgets import Button, build_accent_glow_effect
-from .helpers import load_colored_svg
-from jukebox_client.config import load_songs_from_csv
 from jukebox_client.models import ChartsManager
+from jukebox_client.views.widgets import Button
+
+from .helpers import load_colored_svg
 
 
 class SongRow(QtWidgets.QWidget):
@@ -43,7 +49,12 @@ class SongRow(QtWidgets.QWidget):
         if plays > 0:
             icon = QtWidgets.QLabel()
             icon.setObjectName("SongIconLabel")
-            icon.setPixmap(load_colored_svg(CONFIG.icons.charts_plays_icon, CONFIG.style.colors.text_color))
+            icon.setPixmap(
+                load_colored_svg(
+                    CONFIG.icons.charts_plays_icon,
+                    CONFIG.style.colors.text_color,
+                ),
+            )
             hbox.addWidget(icon)
 
             plays_amount = QtWidgets.QLabel(str(plays))
@@ -84,7 +95,7 @@ class SongWidget(QtWidgets.QGroupBox):
             artist_icon,
             CONFIG.selected_language.classics_artist_description,
             self.song.artist,
-            plays=self.song.plays
+            plays=self.song.plays,
         )
         layout.addWidget(self.artist_widget)
 
@@ -99,21 +110,21 @@ class SongWidget(QtWidgets.QGroupBox):
                 "QGroupBox {"
                 + f"border-right: 6px solid {CONFIG.style.colors.off_accent};"
                 + f"border-bottom: 6px solid {CONFIG.style.colors.off_accent};"
-                + "}"
+                + "}",
             )
         elif event.type() == QtCore.QEvent.Type.Leave:
             self.setStyleSheet(
                 "QGroupBox { "
                 + f"border-right:  4px solid {CONFIG.style.colors.off_accent};"
                 + f"border-bottom: 4px solid {CONFIG.style.colors.off_accent};"
-                + " }"
+                + " }",
             )
         return super().event(event)
 
-    def mousePressEvent(self, event):
+    def mousePressEvent(self, event: QtGui.QMouseEvent | None):  # noqa: N802, inherited
         """Emit the clicked signal when the group box is clicked."""
         self.clicked.emit()
-        return super().mousePressEvent(event)
+        super().mousePressEvent(event)
 
 
 class SongsListWidget(QtWidgets.QWidget):
@@ -147,7 +158,9 @@ class SongsListWidget(QtWidgets.QWidget):
             song_amount = len(self._song_widgets)
 
             layout.addWidget(
-                song_widget, song_amount // self.MAX_COLS, song_amount % self.MAX_COLS
+                song_widget,
+                song_amount // self.MAX_COLS,
+                song_amount % self.MAX_COLS,
             )
             self._song_widgets.append(song_widget)
 

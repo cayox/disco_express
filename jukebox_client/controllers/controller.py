@@ -1,15 +1,16 @@
-from PyQt6 import QtCore, QtWidgets
 import logging
-from jukebox_client.config.models import LanguageConfig
-from typing import Type, TypeVar, Generic
-from jukebox_client.config import CONFIG
+from typing import Generic, TypeVar
 
+from PyQt6 import QtCore, QtWidgets
+
+from jukebox_client.config import CONFIG
+from jukebox_client.config.models import LanguageConfig
 
 V = TypeVar("V")
 
 
 class Controller(QtCore.QObject, Generic[V]):
-    def __init__(self, view_class: Type[V]):
+    def __init__(self, view_class: type[V]):
         super().__init__()
 
         self._view = view_class()
@@ -21,7 +22,7 @@ class Controller(QtCore.QObject, Generic[V]):
         return self._view
 
     def show_error(self, text: str):
-        logging.error(f"Displaying error: {text}")
+        logging.error("Displaying error: %s", text)
         QtWidgets.QMessageBox.critical(self.view, "Error", text)
 
     def get_language(self) -> LanguageConfig:

@@ -21,3 +21,90 @@ ruff = "^0.3.5"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+# Same as Black.
+line-length = 88
+
+target-version = "py311"
+
+exclude = [
+]
+
+[tool.ruff.lint]
+select = [
+    "F",
+    "E",
+    "W",
+    "I",
+    "N",
+    "D",
+    "UP",
+    "ANN",
+    "S",
+    "BLE",
+    "B",
+    "A",
+    "COM",
+    "C4",
+    "FA",
+    "ISC",
+    "ICN",
+    "G",
+    "INP",
+    "PIE",
+    "T20",
+    "PYI",
+    "RSE",
+    "RET",
+    "SLF",
+    "SIM",
+    "TID",
+    "TCH",
+    "INT",
+    "ARG",
+    "TD",
+    "PL",
+    "FLY",
+    "TRY",
+    "PERF",
+    "RUF",
+    "DJ"
+]
+ignore = [
+    "D100",
+    "D104",
+    "D102",
+    "D107",
+    "ANN101", # ignore type annotation for self
+    "ANN204", # ignore return type annotation for init
+    "E501", # Line too Long -> covered by black
+    "B008", # Function call in argument defualts; because of Query()
+    "A003", # Python builtin shadowing
+    "TRY003",  # Avoid long messages in exceptions
+    "RUF005",  # iterable unpacking instead of concatenation
+    "RUF012",  # Mutable class attributes should be annotated with `typing.ClassVar`
+    "ISC003",  # explicitly concatenated string
+
+    # Temporary dev ignore
+    "D1",
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["E402", "F401"]
+
+[tool.ruff.lint.flake8-annotations]
+suppress-dummy-args = true
+suppress-none-returning = true
+mypy-init-return = true
+allow-star-arg-any = true
+
+[tool.ruff.lint.pylint]
+max-args = 10
+
+[tool.black]
+line-length = 88
+

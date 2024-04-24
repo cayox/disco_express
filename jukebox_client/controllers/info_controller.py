@@ -1,23 +1,23 @@
 import os
-
-from jukebox_client.views import MainView, QuickSelectionDialog, InfoView
-from PyQt6 import QtCore, QtWidgets
-from jukebox_client.config import CONFIG, contains_slur
-from jukebox_client.config.models import LanguageConfig
-from jukebox_client.models import JukeBoxClient, MusicRequest, JukeBoxConnectionError
-from jukebox_client.views.widgets import LoadingModal
-import logging
-from .controller import Controller
-from jukebox_client.views import HomeView
 import shutil
+
+from PyQt6 import QtCore
+
+from jukebox_client.config import CONFIG
+from jukebox_client.models import JukeBoxClient, JukeBoxConnectionError
+from jukebox_client.views import InfoView
+
+from .controller import Controller
 
 
 class InfoController(Controller[InfoView]):
     def __init__(self):
         super().__init__(InfoView)
 
-        self.jukebox_client = JukeBoxClient(CONFIG.network.server_ip,
-                                            CONFIG.network.server_port)
+        self.jukebox_client = JukeBoxClient(
+            CONFIG.network.server_ip,
+            CONFIG.network.server_port,
+        )
         self.refresh_docs()
 
         self.timer = QtCore.QTimer()

@@ -1,5 +1,4 @@
 from pydantic import BaseModel
-from typing import Optional
 
 
 class Song(BaseModel):
@@ -31,6 +30,7 @@ class StyleConfig(BaseModel):
     colors: ColorsConfig
     ui_glow_strength: int
     text_glow_strength: int
+
 
 class LanguageConfig(BaseModel):
     language_name: str
@@ -107,4 +107,4 @@ class Config(BaseModel):
     style: StyleConfig
     languages: list[LanguageConfig]
     network: NetworkConfig
-    selected_language: Optional[LanguageConfig] = None
+    selected_language: LanguageConfig | None = None

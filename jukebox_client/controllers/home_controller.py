@@ -1,12 +1,8 @@
-from jukebox_client.views import MainView, QuickSelectionDialog, InfoView
-from PyQt6 import QtCore, QtWidgets
-from jukebox_client.config import CONFIG, contains_slur
-from jukebox_client.config.models import LanguageConfig
-from jukebox_client.models import JukeBoxClient, MusicRequest, JukeBoxConnectionError
-from jukebox_client.views.widgets import LoadingModal
-import logging
-from .controller import Controller
+from PyQt6 import QtCore
+
 from jukebox_client.views import HomeView
+
+from .controller import Controller
 
 
 class HomeController(Controller[HomeView]):
@@ -18,7 +14,6 @@ class HomeController(Controller[HomeView]):
     @QtCore.pyqtSlot()
     def set_selected_language(self):
         language = self.get_language()
-        logging.info(f"Setting language: {language.language_name}")
 
         self.view.music_wish_button.setText(language.home_music_wish_btn)
         self.view.info_button.setText(language.home_info_btn)

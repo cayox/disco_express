@@ -1,8 +1,9 @@
+import csv
 import os.path
 import re
 import tomllib
+
 from .models import Config, Song
-import csv
 
 ASSETS = os.path.join(os.getcwd(), "assets")
 
@@ -26,12 +27,12 @@ def contains_slur(text: str) -> bool:
 
 def load_songs_from_csv(file_path: str) -> list[Song]:
     songs = []
-    with open(file_path, mode="r", newline="") as file:
+    with open(file_path, newline="") as file:
         reader = csv.reader(file, delimiter=";")
         next(reader)  # Skip the header
         for row in reader:
             song = Song(title=row[0], artist=row[1], plays=0)
-            if len(row) > 2:
+            if len(row) > 2:  # noqa: PLR2004
                 song.plays = row[2]
             songs.append(song)
     return songs

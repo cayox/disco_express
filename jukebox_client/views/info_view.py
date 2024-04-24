@@ -1,11 +1,15 @@
 import os.path
 
-from PyQt6 import QtWidgets, QtCore, QtGui, QtSvg
+from PyQt6 import QtCore, QtGui, QtWidgets
+
 from jukebox_client.config import CONFIG
-from jukebox_client.config.models import LanguageConfig
-from jukebox_client.views.widgets import Button, SubHeaderLabel, build_accent_glow_effect
+from jukebox_client.views.widgets import (
+    Button,
+    SubHeaderLabel,
+    build_accent_glow_effect,
+)
+
 from .view import View
-from .helpers import load_colored_svg
 
 
 class ImageViewer(QtWidgets.QDialog):
@@ -68,7 +72,6 @@ class DocumentWidget(QtWidgets.QPushButton):
         # self.setIconSize(QtCore.QSize(*self.ICON_SIZE))
 
 
-
 class InfoView(View):
     MAX_COLS = 3
 
@@ -94,7 +97,7 @@ class InfoView(View):
 
         self.layout = QtWidgets.QVBoxLayout(w)
         self.layout.setAlignment(
-            QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignTop
+            QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignTop,
         )
 
         scroll_area.setWidgetResizable(True)
@@ -120,7 +123,7 @@ class InfoView(View):
         for document in os.listdir(CONFIG.general.documents_directory):
             path = os.path.join(CONFIG.general.documents_directory, document)
             doc_widget = DocumentWidget(
-                path
+                path,
             )
             doc_widget.clicked.connect(self._on_song_selected)
 

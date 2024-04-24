@@ -1,11 +1,20 @@
-from PyQt6 import QtWidgets, QtCore, QtGui
-from jukebox_client.views.widgets import LanguageSwitch, Button, SubHeaderLabel, RotatingBanner
-from .view import View
+from typing import Any
+
+from PyQt6 import QtCore, QtWidgets
+
 from jukebox_client.config import CONFIG
+from jukebox_client.views.widgets import (
+    Button,
+    LanguageSwitch,
+    RotatingBanner,
+    SubHeaderLabel,
+)
+
+from .view import View
 
 
 class NavigationButton(Button):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: Any, **kwargs: Any):
         super().__init__(*args, **kwargs)
         self.setObjectName("NavigationButton")
 
@@ -26,7 +35,7 @@ class HomeView(View):
         button_layout.setSpacing(128)
 
         self.music_wish_button = NavigationButton(
-            CONFIG.selected_language.home_music_wish_btn
+            CONFIG.selected_language.home_music_wish_btn,
         )
 
         button_layout.addWidget(self.music_wish_button)

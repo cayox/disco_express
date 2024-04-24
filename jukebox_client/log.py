@@ -1,13 +1,11 @@
 import logging
+import time
 from logging.handlers import RotatingFileHandler
 from threading import current_thread
-import time
 
 
 class CustomFormatter(logging.Formatter):
-    """
-    Custom formatter to include thread, file, line, log level, time, and message in the log output.
-    """
+    """Custom formatter to include thread, file, line, log level, time, and message in the log output."""
 
     def format(self, record: logging.LogRecord) -> str:
         ct = current_thread()
@@ -16,14 +14,14 @@ class CustomFormatter(logging.Formatter):
         record.lineno = record.lineno
         record.levelname = record.levelname
         record.asctime = time.strftime(
-            "%Y-%m-%d %H:%M:%S", time.localtime(record.created)
+            "%Y-%m-%d %H:%M:%S",
+            time.localtime(record.created),
         )
         return f"[{record.asctime}] [{record.threadName}] [{record.filename}:{record.lineno}] [{record.levelname}] {record.msg}"
 
 
 def setup_basic_logger(log_file_path: str) -> None:
-    """
-    Configures the basic logging setup to use both terminal and rotating log file output with custom formatting.
+    """Configures the basic logging setup to use both terminal and rotating log file output with custom formatting.
 
     Args:
     log_file_path (str): Path to the log file.
