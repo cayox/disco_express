@@ -2,16 +2,16 @@ import os.path
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 
-from jukebox_client.config import (
+from disco_express.config import (
     APP_CONFIG_ROOT,
     CLASSICS_SONGS,
     CONFIG,
     CURRENT_CHARTS_SONGS,
     Song,
 )
-from jukebox_client.config.models import LanguageConfig
-from jukebox_client.models import ChartsManager
-from jukebox_client.views.widgets import Button, build_accent1_glow_effect
+from disco_express.config.models import LanguageConfig
+from disco_express.models import ChartsManager
+from disco_express.views.widgets import Button, build_accent1_glow_effect
 
 from .helpers import load_colored_svg
 

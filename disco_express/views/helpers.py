@@ -2,7 +2,7 @@ import os
 
 from PyQt6 import QtCore, QtGui, QtSvg
 
-from jukebox_client.config import APP_CONFIG_ROOT
+from disco_express.config import APP_CONFIG_ROOT
 
 
 def load_colored_svg(

@@ -2,8 +2,8 @@ from typing import Any
 
 from PyQt6 import QtCore, QtWidgets
 
-from jukebox_client.config import CONFIG
-from jukebox_client.views.widgets import (
+from disco_express.config import CONFIG
+from disco_express.views.widgets import (
     Button,
     LanguageSwitch,
     RotatingBanner,

@@ -2,8 +2,8 @@ import os
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 
-from jukebox_client.config import APP_CONFIG_ROOT, CONFIG
-from jukebox_client.views.widgets import (
+from disco_express.config import APP_CONFIG_ROOT, CONFIG
+from disco_express.views.widgets import (
     IconButton,
     TimeWidget,
     TitleLabel,

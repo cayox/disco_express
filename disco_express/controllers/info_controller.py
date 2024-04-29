@@ -3,9 +3,9 @@ import shutil
 
 from PyQt6 import QtCore
 
-from jukebox_client.config import APP_CONFIG_ROOT, CONFIG
-from jukebox_client.models import JukeBoxClient, JukeBoxConnectionError
-from jukebox_client.views import InfoView
+from disco_express.config import APP_CONFIG_ROOT, CONFIG
+from disco_express.models import JukeBoxClient, JukeBoxConnectionError
+from disco_express.views import InfoView
 
 from .controller import Controller
 

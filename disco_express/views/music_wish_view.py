@@ -1,7 +1,7 @@
 from PyQt6 import QtWidgets
 
-from jukebox_client.config import CONFIG
-from jukebox_client.views.widgets import Button, MusicWishWidget, SubHeaderLabel
+from disco_express.config import CONFIG
+from disco_express.views.widgets import Button, MusicWishWidget, SubHeaderLabel
 
 from .view import View
 

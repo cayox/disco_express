@@ -2,7 +2,7 @@ import os
 
 import pandas as pd
 
-from jukebox_client.config.models import Song
+from disco_express.config.models import Song
 
 HEADER = ["Title", "Artist", "Plays"]
 

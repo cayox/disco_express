@@ -4,17 +4,17 @@ import sys
 
 from PyQt6 import QtCore
 
-from jukebox_client.config import APP_CONFIG_ROOT, CONFIG, contains_slur
-from jukebox_client.config.models import Song
-from jukebox_client.models import (
+from disco_express.config import APP_CONFIG_ROOT, CONFIG, contains_slur
+from disco_express.config.models import Song
+from disco_express.models import (
     ChartsManager,
     JukeBoxClient,
     JukeBoxConnectionError,
     MusicRequest,
 )
-from jukebox_client.models.jukebox_client import ServerStatus
-from jukebox_client.views import MusicWishView, QuickSelectionDialog
-from jukebox_client.views.widgets import LoadingModal
+from disco_express.models.jukebox_client import ServerStatus
+from disco_express.views import MusicWishView, QuickSelectionDialog
+from disco_express.views.widgets import LoadingModal
 
 from .controller import Controller
 

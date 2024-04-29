@@ -3,8 +3,8 @@ from typing import Generic, TypeVar
 
 from PyQt6 import QtCore, QtWidgets
 
-from jukebox_client.config import CONFIG
-from jukebox_client.config.models import LanguageConfig
+from disco_express.config import CONFIG
+from disco_express.config.models import LanguageConfig
 
 V = TypeVar("V")
 

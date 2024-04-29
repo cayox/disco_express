@@ -4,9 +4,9 @@ from typing import Any
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 
-from jukebox_client.config import APP_CONFIG_ROOT, CONFIG
-from jukebox_client.config.models import LanguageConfig
-from jukebox_client.models.jukebox_client import ServerStatus
+from disco_express.config import APP_CONFIG_ROOT, CONFIG
+from disco_express.config.models import LanguageConfig
+from disco_express.models.jukebox_client import ServerStatus
 
 from .helpers import load_colored_svg
 

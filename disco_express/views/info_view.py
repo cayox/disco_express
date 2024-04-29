@@ -2,8 +2,8 @@ import os.path
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 
-from jukebox_client.config import CONFIG
-from jukebox_client.views.widgets import (
+from disco_express.config import CONFIG
+from disco_express.views.widgets import (
     Button,
     SubHeaderLabel,
     build_accent1_glow_effect,

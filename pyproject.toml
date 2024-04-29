@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "jukebox-client"
+name = "disco-express"
 version = "1.0.0"
 description = "GUI for submitting music wishes"
 authors = ["Nico Päller <n.p.98@hotmail.de>"]

@@ -2,9 +2,9 @@ import logging
 
 from PyQt6 import QtCore
 
-from jukebox_client.config import CONFIG
-from jukebox_client.models.jukebox_client import JukeBoxClient, JukeBoxConnectionError
-from jukebox_client.views import HomeView
+from disco_express.config import CONFIG
+from disco_express.models.jukebox_client import JukeBoxClient, JukeBoxConnectionError
+from disco_express.views import HomeView
 
 from .controller import Controller
 

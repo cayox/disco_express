@@ -2,8 +2,8 @@ import logging
 
 from PyQt6 import QtCore
 
-from jukebox_client.config import CONFIG
-from jukebox_client.views import MainView
+from disco_express.config import CONFIG
+from disco_express.views import MainView
 
 from .controller import Controller
 from .home_controller import HomeController
