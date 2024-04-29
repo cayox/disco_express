@@ -6,7 +6,7 @@ from jukebox_client.config import CONFIG
 from jukebox_client.views.widgets import (
     Button,
     SubHeaderLabel,
-    build_accent_glow_effect,
+    build_accent1_glow_effect,
 )
 
 from .view import View
@@ -57,7 +57,7 @@ class DocumentWidget(QtWidgets.QPushButton):
         super().__init__(name)
         self.setObjectName("DocumentWidget")
 
-        self.setGraphicsEffect(build_accent_glow_effect())
+        self.setGraphicsEffect(build_accent1_glow_effect())
 
         # self.setMinimumWidth(256)
 

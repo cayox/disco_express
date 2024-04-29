@@ -1,23 +1,25 @@
 import logging
-import time
 from logging.handlers import RotatingFileHandler
-from threading import current_thread
 
 
-class CustomFormatter(logging.Formatter):
-    """Custom formatter to include thread, file, line, log level, time, and message in the log output."""
+class PrettyFormatter(logging.Formatter):
+    """Custom formatter to output a prettier and more informative log message."""
+
+    def __init__(self):
+        super().__init__()
+        self.fmt = "{asctime} - {levelname} - {message}"
+        self.datefmt = "%Y-%m-%d %H:%M:%S"
+        self.style = "{"
 
     def format(self, record: logging.LogRecord) -> str:
-        ct = current_thread()
-        record.threadName = ct.name
-        record.filename = record.filename
-        record.lineno = record.lineno
-        record.levelname = record.levelname
-        record.asctime = time.strftime(
-            "%Y-%m-%d %H:%M:%S",
-            time.localtime(record.created),
+        # Setting the default format for the message before adding extras
+        format_orig = self.fmt
+        format_orig = "[{filename}:{lineno} ({funcName})] " + format_orig
+
+        formatter = logging.Formatter(
+            format_orig, datefmt=self.datefmt, style=self.style
         )
-        return f"[{record.asctime}] [{record.threadName}] [{record.filename}:{record.lineno}] [{record.levelname}] {record.msg}"
+        return formatter.format(record)
 
 
 def setup_basic_logger(log_file_path: str) -> None:
@@ -36,12 +38,12 @@ def setup_basic_logger(log_file_path: str) -> None:
     # Stream handler for terminal logging
     stream_handler = logging.StreamHandler()
     stream_handler.setLevel(logging.DEBUG)
-    stream_handler.setFormatter(CustomFormatter())
+    stream_handler.setFormatter(PrettyFormatter())
 
     # File handler setup
     file_handler = RotatingFileHandler(log_file_path, maxBytes=1048576, backupCount=5)
     file_handler.setLevel(logging.DEBUG)
-    file_handler.setFormatter(CustomFormatter())
+    file_handler.setFormatter(PrettyFormatter())
 
     # Adding handlers to the root logger
     logger.addHandler(stream_handler)

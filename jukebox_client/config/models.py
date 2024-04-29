@@ -10,15 +10,19 @@ class Song(BaseModel):
 class ColorsConfig(BaseModel):
     background_color: str
     text_color: str
-    accent: str
-    accent_glow: str
-    off_accent: str
+
+    accent1: str
+    accent1_glow: str
+    accent1_dark: str
+
     highlight_glow: str
     highlight: str
     off_highlight: str
+
     icon_color: str
 
     white: str
+    red: str
 
     disabled_light: str
     disabled: str
@@ -27,6 +31,7 @@ class ColorsConfig(BaseModel):
 
 class StyleConfig(BaseModel):
     background_image: str
+    background_darkness_factor: float = 0.5
     colors: ColorsConfig
     ui_glow_strength: int
     text_glow_strength: int
@@ -65,7 +70,7 @@ class LanguageConfig(BaseModel):
     loading_description: list[str]
     loading_success: str
 
-    rotating_banner: str
+    rotating_banner: str = "---"
 
 
 class NetworkConfig(BaseModel):

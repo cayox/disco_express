@@ -4,18 +4,18 @@ from typing import Any
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 
-from jukebox_client.config import CONFIG
+from jukebox_client.config import APP_CONFIG_ROOT, CONFIG
 from jukebox_client.config.models import LanguageConfig
 from jukebox_client.models.jukebox_client import ServerStatus
 
 from .helpers import load_colored_svg
 
 
-def build_accent_glow_effect() -> QtWidgets.QGraphicsDropShadowEffect:
+def build_accent1_glow_effect() -> QtWidgets.QGraphicsDropShadowEffect:
     effect = QtWidgets.QGraphicsDropShadowEffect()
     effect.setOffset(0)
     effect.setBlurRadius(CONFIG.style.ui_glow_strength)
-    effect.setColor(QtGui.QColor(CONFIG.style.colors.accent_glow))
+    effect.setColor(QtGui.QColor(CONFIG.style.colors.accent1_glow))
     return effect
 
 
@@ -50,14 +50,14 @@ class IconButton(QtWidgets.QPushButton):
 
         self.setIcon(QtGui.QIcon(load_colored_svg(icon, color, size)))
 
-        self.setGraphicsEffect(build_accent_glow_effect())
+        self.setGraphicsEffect(build_accent1_glow_effect())
 
 
 class Button(QtWidgets.QPushButton):
     def __init__(self, text: str):
         super().__init__(f"<{text}>")
 
-        self.setGraphicsEffect(build_accent_glow_effect())
+        self.setGraphicsEffect(build_accent1_glow_effect())
 
     def setText(self, text: str):  # noqa: N802
         super().setText(f"<{text}>")
@@ -158,7 +158,7 @@ class MusicWishWidget(QtWidgets.QGroupBox):
         super().__init__()
         self.setObjectName("MusicWishWidget")
 
-        self.setGraphicsEffect(build_accent_glow_effect())
+        self.setGraphicsEffect(build_accent1_glow_effect())
 
         self._build_ui()
 
@@ -194,7 +194,8 @@ class LanguageButton(QtWidgets.QPushButton):
         self._highlight = False
         self.language = language
 
-        self.icon = QtGui.QIcon(language.language_icon)
+        icon_path = os.path.join(APP_CONFIG_ROOT, language.language_icon)
+        self.icon = QtGui.QIcon(icon_path)
         self.setIcon(self.icon)
         self.setIconSize(QtCore.QSize(48, 32))
         self.setToolTip(language.language_name.capitalize())
@@ -283,16 +284,16 @@ class StatusWidget(QtWidgets.QWidget):
 
     def set_status(self, status: ServerStatus):
         if status == ServerStatus.UNAVAILABLE:
-            color = CONFIG.style.colors.off_accent
+            color = CONFIG.style.colors.red
             icon = load_colored_svg(
-                os.path.join(os.getcwd(), CONFIG.icons.unavailable_icon),
+                CONFIG.icons.unavailable_icon,
                 color,
             )
             text = CONFIG.selected_language.error_dj_unavailable
         elif status == ServerStatus.ERROR:
-            color = CONFIG.style.colors.highlight
+            color = CONFIG.style.colors.red
             icon = load_colored_svg(
-                os.path.join(os.getcwd(), CONFIG.icons.error_icon),
+                CONFIG.icons.error_icon,
                 color,
             )
             text = CONFIG.selected_language.error_no_connection_to_server
@@ -349,6 +350,7 @@ class LoadingModal(QtWidgets.QDialog):
         self.progress_bar.setMaximum(100)
         self.progress_bar.setMinimum(0)
         self.progress_bar.setValue(0)
+        self.progress_bar.setGraphicsEffect(build_highlight_glow_effect())
 
         layout.addWidget(self.progress_bar)
 

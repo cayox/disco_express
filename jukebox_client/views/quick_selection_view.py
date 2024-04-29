@@ -3,6 +3,7 @@ import os.path
 from PyQt6 import QtCore, QtGui, QtWidgets
 
 from jukebox_client.config import (
+    APP_CONFIG_ROOT,
     CLASSICS_SONGS,
     CONFIG,
     CURRENT_CHARTS_SONGS,
@@ -10,7 +11,7 @@ from jukebox_client.config import (
 )
 from jukebox_client.config.models import LanguageConfig
 from jukebox_client.models import ChartsManager
-from jukebox_client.views.widgets import Button
+from jukebox_client.views.widgets import Button, build_accent1_glow_effect
 
 from .helpers import load_colored_svg
 
@@ -25,7 +26,7 @@ class SongRow(QtWidgets.QWidget):
 
         icon_label = QtWidgets.QLabel()
         icon_label.setObjectName("SongIconLabel")
-        icon_label.setPixmap(load_colored_svg(icon, CONFIG.style.colors.text_color))
+        icon_label.setPixmap(load_colored_svg(icon, CONFIG.style.colors.accent1_glow))
         layout.addWidget(icon_label)
 
         vbox = QtWidgets.QVBoxLayout()
@@ -52,7 +53,7 @@ class SongRow(QtWidgets.QWidget):
             icon.setPixmap(
                 load_colored_svg(
                     CONFIG.icons.charts_plays_icon,
-                    CONFIG.style.colors.text_color,
+                    CONFIG.style.colors.accent1_glow,
                 ),
             )
             hbox.addWidget(icon)
@@ -82,22 +83,26 @@ class SongWidget(QtWidgets.QGroupBox):
     def _build_ui(self):
         layout = QtWidgets.QVBoxLayout(self)
 
-        song_icon = os.path.join(os.getcwd(), CONFIG.icons.song_icon)
         self.song_widget = SongRow(
-            song_icon,
+            CONFIG.icons.song_icon,
             CONFIG.selected_language.classics_song_description,
             self.song.title,
         )
         layout.addWidget(self.song_widget)
 
-        artist_icon = os.path.join(os.getcwd(), CONFIG.icons.artist_icon)
         self.artist_widget = SongRow(
-            artist_icon,
+            CONFIG.icons.artist_icon,
             CONFIG.selected_language.classics_artist_description,
             self.song.artist,
             plays=self.song.plays,
         )
         layout.addWidget(self.artist_widget)
+
+        self.setStyleSheet(
+            "QGroupBox { "
+            + f"border:  4px solid {CONFIG.style.colors.accent1_dark};"
+            + " }",
+        )
 
     def _set_title(self):
         title = f"# {self.index}"
@@ -108,17 +113,17 @@ class SongWidget(QtWidgets.QGroupBox):
         if event.type() == QtCore.QEvent.Type.Enter:
             self.setStyleSheet(
                 "QGroupBox {"
-                + f"border-right: 6px solid {CONFIG.style.colors.off_accent};"
-                + f"border-bottom: 6px solid {CONFIG.style.colors.off_accent};"
+                + f"border: 4px solid {CONFIG.style.colors.accent1_glow};"
                 + "}",
             )
+            self.setGraphicsEffect(build_accent1_glow_effect())
         elif event.type() == QtCore.QEvent.Type.Leave:
             self.setStyleSheet(
                 "QGroupBox { "
-                + f"border-right:  4px solid {CONFIG.style.colors.off_accent};"
-                + f"border-bottom: 4px solid {CONFIG.style.colors.off_accent};"
+                + f"border:  4px solid {CONFIG.style.colors.accent1_dark};"
                 + " }",
             )
+            self.setGraphicsEffect(None)
         return super().event(event)
 
     def mousePressEvent(self, event: QtGui.QMouseEvent | None):  # noqa: N802, inherited
@@ -182,7 +187,8 @@ class QuickSelectionDialog(QtWidgets.QDialog):
 
         self.setObjectName("QuickSelectionDialog")
 
-        self.charts_manager = ChartsManager(CONFIG.general.charts_file)
+        charts_path = os.path.join(APP_CONFIG_ROOT, CONFIG.general.charts_file)
+        self.charts_manager = ChartsManager(charts_path)
 
         self._selected_song = None
         self.language = language

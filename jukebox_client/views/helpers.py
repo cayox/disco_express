@@ -1,10 +1,17 @@
+import os
+
 from PyQt6 import QtCore, QtGui, QtSvg
 
+from jukebox_client.config import APP_CONFIG_ROOT
 
-def load_colored_svg(svg_path: str, color: str, icon_size: int = 32) -> QtGui.QPixmap:
+
+def load_colored_svg(
+    relative_svg_path: str, color: str, icon_size: int = 32
+) -> QtGui.QPixmap:
     """Load and color an SVG, returning a QPixmap."""
     # Read SVG data
-    with open(svg_path, "rb") as file:
+    path = os.path.join(APP_CONFIG_ROOT, relative_svg_path)
+    with open(path, "rb") as file:
         svg_data = file.read()
 
     # Replace color in SVG

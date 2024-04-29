@@ -2,10 +2,10 @@
 debug = true
 app_name = "Disco Express"
 
-classics_file = "assets/data/classics.csv"
-charts_file = "assets/data/charts.csv"
-current_charts = "assets/data/current_charts.csv"
-slurs_file = "assets/data/slurs.txt"
+classics_file = "data/classics.csv"
+charts_file = "data/charts.csv"
+current_charts = "data/current_charts.csv"
+slurs_file = "data/slurs.txt"
 
 log_directory = "logs" # relative to apps execution directory
 
@@ -16,19 +16,18 @@ banner_speed = 100 # in millisekunden: interval in welchem das banner um einen B
 
 ######### DOCUMENTS
 
-# Wenn hier ein Pfad geändert wird muss auch bei jeder Sprache der Name des entsprechenden Dokuments geändert werden
-documents_directory = "assets/documents"
+documents_directory = "documents"
 
 ######### ICONS
 
 [icons]
-artist_icon = "assets/icons/artist.svg"
-song_icon = "assets/icons/song.svg"
-file_icon = "assets/icons/file.svg"
-error_icon = "assets/icons/error.svg"
-home_icon = "assets/icons/home.svg"
-charts_plays_icon = "assets/icons/chart.svg"
-unavailable_icon = "assets/icons/unavailable.svg"
+artist_icon = "icons/artist.svg"
+song_icon = "icons/song.svg"
+file_icon = "icons/file.svg"
+error_icon = "icons/error.svg"
+home_icon = "icons/home.svg"
+charts_plays_icon = "icons/chart.svg"
+unavailable_icon = "icons/unavailable.svg"
 
 ######### NETWORK
 
@@ -38,7 +37,8 @@ server_port = 8080
 
 ######### COLORS
 [style]
-background_image = "assets/img/background5.jpg"
+background_image = "img/jukebox_comic.jpg"
+background_darkness_factor = 0.7
 # je stärker der glow (neon) desto schlechter ist die performance
 ui_glow_strength = 128
 text_glow_strength = 128
@@ -46,15 +46,19 @@ text_glow_strength = 128
 [style.colors]
 background_color = "#f5ebe0"
 text_color = "#5DCAE6"
-accent_glow = "#5DCAE6"
-accent = "#338a9f"
-off_accent = "#1F677A"
-highlight_glow = "#FF5900"
-highlight = "#ba361d"
-off_highlight = "#913623"
+
+accent1_glow = "#80ffdb"
+accent1 = "#48bfe3"
+accent1_dark = "#4895ef"
+
+highlight_glow = "#ff0a54"
+highlight = "#ff7096"
+off_highlight = "#e01e37"
+
 icon_color = "#f5ebe0"
 
 white = "#f5ebe0"
+red = "#e01e37"
 
 disabled_light = "#ced4da"
 disabled = "#adb5bd"
@@ -64,7 +68,7 @@ disabled_dark = "#6c757d"
 
 [[languages]]
 language_name = "german"
-language_icon = "assets/icons/de.svg"
+language_icon = "icons/de.svg"
 
 heading_music_wish = "Geben Sie einen Musikwunsch an. Sie können diesen Musikwunsch auch an eine Person richten!"
 heading_home = "Willkommen beim Disco Express. Hier können Sie sich ein Lied wünschen oder Informationen zum Fahrgeschäft erhalten."
@@ -95,11 +99,10 @@ classics_song_description = "Musik Titel"
 loading_description = ["Suche CD heraus ...", "Lege CD ein ...", "Packe deinen Song in die Warteschlange ..."]
 loading_success = "Musikwunsch erfolgreich versendet!"
 
-rotating_banner = "5€ pro Ticket --- Sende einen Musikwunsch an einen Freund oder Geliebten --- Heute nur bis 18:00 Uhr --- "
 
 [[languages]]
 language_name = "english"
-language_icon = "assets/icons/gb.svg"
+language_icon = "icons/gb.svg"
 app_name = "Disco Express"
 
 heading_music_wish = "Enter a music wish. You can also direct this wish to someone!"
@@ -130,5 +133,3 @@ classics_song_description = "Music Title"
 
 loading_description = ["Finding Disc ...", "Inserting Disc ...", "Putting song in queue ..."]
 loading_success = "Your music wish was sent sucessfully!"
-
-rotating_banner = "5€ per Ticket --- Send a music wish to a friend or loved one --- Today we are only open until 18:00 --- "

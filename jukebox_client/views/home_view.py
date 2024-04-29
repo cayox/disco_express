@@ -13,10 +13,10 @@ from jukebox_client.views.widgets import (
 from .view import View
 
 
-class NavigationButton(Button):
+class NavigationButton1(Button):
     def __init__(self, *args: Any, **kwargs: Any):
         super().__init__(*args, **kwargs)
-        self.setObjectName("NavigationButton")
+        self.setObjectName("NavigationButton1")
 
 
 class HomeView(View):
@@ -34,13 +34,13 @@ class HomeView(View):
         button_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         button_layout.setSpacing(128)
 
-        self.music_wish_button = NavigationButton(
+        self.music_wish_button = NavigationButton1(
             CONFIG.selected_language.home_music_wish_btn,
         )
 
         button_layout.addWidget(self.music_wish_button)
 
-        self.info_button = NavigationButton(CONFIG.selected_language.home_info_btn)
+        self.info_button = NavigationButton1(CONFIG.selected_language.home_info_btn)
         button_layout.addWidget(self.info_button)
 
         self.language_widget = LanguageSwitch()

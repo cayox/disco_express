@@ -6,8 +6,6 @@ from typing import Any
 import requests
 from pydantic import BaseModel
 
-from jukebox_client.config import CONFIG
-
 
 class JukeBoxConnectionError(Exception):
     """Error indicating the Jukebox Server cannot be reached."""
@@ -31,6 +29,11 @@ class MusicRequest(BaseModel):
 class JukeBoxError(BaseModel):
     status: int
     error: str
+
+
+class BannerSchema(BaseModel):
+    german: str
+    english: str
 
 
 HTTP_OK_RANGE = 200, 299
@@ -63,7 +66,7 @@ class JukeBoxClient:
             return response, None
 
         body = response.json()
-        logging.debug("Request unsucessful: (%s) %s", response.status_code, body)
+        logging.debug("Request unsuccessful: (%s) %s", response.status_code, body)
         error_msg = body.get("error", body.get("detail", str(body)))
         return None, JukeBoxError(status=response.status_code, error=error_msg)
 
@@ -72,7 +75,7 @@ class JukeBoxClient:
         try:
             response, err = self.request(
                 "POST",
-                "/music_wish",
+                "/music_wish/",
                 data=music_request.dict(),
             )
             if err is not None:
@@ -81,26 +84,34 @@ class JukeBoxClient:
             raise JukeBoxConnectionError(str(exc)) from exc
 
     def get_status(self) -> ServerStatus:
-        response, err = self.request("GET", "/status")
+        response, err = self.request("GET", "/status/")
         if err is not None:
             raise JukeBoxConnectionError(str(err))
         body = response.json()
         return ServerStatus(body["status"])
 
     def list_documents(self) -> list[str]:
-        response, err = self.request("GET", "/documents")
+        response, err = self.request("GET", "/documents/")
         if err is not None:
             raise JukeBoxConnectionError(str(err))
         return response.json()
 
-    def get_document(self, doc_name: str) -> str:
+    def get_document(self, doc_name: str, save_dir: str) -> str:
         response, err = self.request("GET", f"/documents/{doc_name}")
         if err is not None:
             raise JukeBoxConnectionError(str(err))
 
         # Save the file to local disk
-        save_path = os.path.join(CONFIG.general.documents_directory, doc_name)
+        save_path = os.path.join(save_dir, doc_name)
         with open(save_path, "wb") as file:
             file.write(response.content)
         logging.info("Downloaded '%s' successfully.", doc_name)
         return save_path
+
+    def get_banner_texts(self) -> BannerSchema:
+        response, err = self.request("GET", "/banner/")
+        if err is not None:
+            raise JukeBoxConnectionError(str(err))
+
+        body = response.json()
+        return BannerSchema(**body)

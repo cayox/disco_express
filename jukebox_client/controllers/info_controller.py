@@ -3,7 +3,7 @@ import shutil
 
 from PyQt6 import QtCore
 
-from jukebox_client.config import CONFIG
+from jukebox_client.config import APP_CONFIG_ROOT, CONFIG
 from jukebox_client.models import JukeBoxClient, JukeBoxConnectionError
 from jukebox_client.views import InfoView
 
@@ -14,6 +14,8 @@ class InfoController(Controller[InfoView]):
     def __init__(self):
         super().__init__(InfoView)
 
+        self._document_cache = []
+
         self.jukebox_client = JukeBoxClient(
             CONFIG.network.server_ip,
             CONFIG.network.server_port,
@@ -21,7 +23,7 @@ class InfoController(Controller[InfoView]):
         self.refresh_docs()
 
         self.timer = QtCore.QTimer()
-        self.timer.setInterval(60000)
+        self.timer.setInterval(10000)
         self.timer.timeout.connect(self.refresh_docs)
         self.timer.start()
 
@@ -37,11 +39,15 @@ class InfoController(Controller[InfoView]):
     def refresh_docs(self):
         try:
             documents = self.jukebox_client.list_documents()
+            if documents == self._document_cache:
+                return
 
-            shutil.rmtree(CONFIG.general.documents_directory)
-            os.makedirs(CONFIG.general.documents_directory)
+            docs_dir = os.path.join(APP_CONFIG_ROOT, CONFIG.general.documents_directory)
+            if os.path.isdir(docs_dir):
+                shutil.rmtree(docs_dir)
+            os.makedirs(docs_dir)
             for doc in documents:
-                self.jukebox_client.get_document(doc)
+                self.jukebox_client.get_document(doc, docs_dir)
         except JukeBoxConnectionError:
             pass
         finally:

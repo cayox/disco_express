@@ -1,10 +1,10 @@
 import logging
+import os
 import sys
 
-import requests.exceptions
 from PyQt6 import QtCore
 
-from jukebox_client.config import CONFIG, contains_slur
+from jukebox_client.config import APP_CONFIG_ROOT, CONFIG, contains_slur
 from jukebox_client.config.models import Song
 from jukebox_client.models import (
     ChartsManager,
@@ -23,14 +23,16 @@ class MusicController(Controller[MusicWishView]):
     music_request_sent = QtCore.pyqtSignal()
 
     def __init__(self):
-        super().__init__(MusicWishView)
 
         self._client = JukeBoxClient(
             CONFIG.network.server_ip,
             CONFIG.network.server_port,
         )
 
-        self.chart_manager = ChartsManager(CONFIG.general.charts_file)
+        super().__init__(MusicWishView)
+
+        charts_path = os.path.join(APP_CONFIG_ROOT, CONFIG.general.charts_file)
+        self.chart_manager = ChartsManager(charts_path)
 
     def connect_view(self):
         logging.debug("Connecting controller to view")
@@ -133,7 +135,7 @@ class MusicController(Controller[MusicWishView]):
         try:
             status = self._client.get_status()
             self.set_connection_status(status)
-        except requests.exceptions.ConnectionError:
+        except JukeBoxConnectionError:
             self.set_connection_status(ServerStatus.ERROR)
 
     def set_connection_status(self, status: ServerStatus):

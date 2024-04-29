@@ -2,7 +2,7 @@ import os
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 
-from jukebox_client.config import CONFIG
+from jukebox_client.config import APP_CONFIG_ROOT, CONFIG
 from jukebox_client.views.widgets import (
     IconButton,
     TimeWidget,
@@ -19,12 +19,13 @@ class MainView(QtWidgets.QWidget):
 
         self._build_ui()
         self.background = QtGui.QPixmap(
-            os.path.join(os.getcwd(), CONFIG.style.background_image),
+            os.path.join(APP_CONFIG_ROOT, CONFIG.style.background_image),
         )
         self.setWindowFlags(QtCore.Qt.WindowType.FramelessWindowHint)
 
     def paintEvent(self, event: QtGui.QPaintEvent):  # noqa: N802, ARG002, inherited
         painter = QtGui.QPainter(self)
+        painter.setOpacity(1 - CONFIG.style.background_darkness_factor)
         painter.drawPixmap(self.rect(), self.background)
 
     def _build_ui(self):
@@ -39,7 +40,7 @@ class MainView(QtWidgets.QWidget):
 
         self.home_button = IconButton(
             CONFIG.icons.home_icon,
-            CONFIG.style.colors.text_color,
+            CONFIG.style.colors.accent1_glow,
             128,
         )
         header_layout.addWidget(self.home_button)

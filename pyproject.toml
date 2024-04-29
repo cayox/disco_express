@@ -8,7 +8,7 @@ readme = "README.md"
 package-mode = false
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = ">=3.11,<3.13"
 PyQt6 = "^6.6.1"
 requests = "^2.31.0"
 pydantic = "^2.7.0"
@@ -17,10 +17,17 @@ pandas = "^2.2.2"
 [tool.poetry.group.dev.dependencies]
 black = "^24.3.0"
 ruff = "^0.3.5"
+poethepoet = "^0.26.0"
+mdpdf = "^0.0.18"
+pyinstaller = "^6.6.0"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poe.tasks]
+build = "pyinstaller main.spec --noconfirm"
+docs = "mdpdf -o docs/README.pdf README.md"
 
 [tool.ruff]
 # Same as Black.
