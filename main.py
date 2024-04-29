@@ -1,10 +1,11 @@
+import datetime
 import logging
 import os
 import sys
 
 from PyQt6 import QtGui, QtWidgets
 
-from jukebox_client.config import ASSETS, CONFIG
+from jukebox_client.config import ASSETS, CONFIG, APP_CONFIG_ROOT
 from jukebox_client.controllers import MainController
 from jukebox_client.log import setup_basic_logger
 
@@ -12,11 +13,9 @@ STYLESHEET = os.path.join(ASSETS, "styles", "stylesheet.qss")
 FONTS = os.path.join(ASSETS, "fonts")
 
 log_file = os.path.join(
-    os.getcwd(),
+    APP_CONFIG_ROOT,
     CONFIG.general.log_directory,
-    "disco_express_log.log",
-)
-os.makedirs(os.path.dirname(log_file), exist_ok=True)
+    f"disco_express_{datetime.datetime.now().strftime('%d-%m-%Y_%H-%M-%S')}.log")
 setup_basic_logger(log_file)
 
 
