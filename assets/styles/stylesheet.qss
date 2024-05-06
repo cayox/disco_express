@@ -286,7 +286,7 @@ QGroupBox#SongWidget {
     border-radius: 8px;
     border-right: 4px solid %accent1_dark%;
     border-bottom: 4px solid %accent1_dark%;
-    color: %text_color%;
+    color: %accent1%;
     font-size: 32px;
     padding-top: 8px;
 }

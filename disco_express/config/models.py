@@ -86,6 +86,8 @@ class IconsConfig(BaseModel):
     home_icon: str
     charts_plays_icon: str
     unavailable_icon: str
+    zoom_in_icon: str
+    zoom_out_icon: str
 
 
 class GeneralConfig(BaseModel):
@@ -104,6 +106,13 @@ class GeneralConfig(BaseModel):
     server_refresh_interval: int
     wish_sending_time: int
     banner_speed: int
+
+    max_input_length: int
+    max_input_length_message: int
+
+    screen_saver_images: str
+    screen_saver_rotation_speed: int
+    screen_saver_start_time: int
 
 
 class Config(BaseModel):

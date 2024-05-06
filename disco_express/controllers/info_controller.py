@@ -48,6 +48,8 @@ class InfoController(Controller[InfoView]):
             os.makedirs(docs_dir)
             for doc in documents:
                 self.jukebox_client.get_document(doc, docs_dir)
+
+            self._document_cache = documents
         except JukeBoxConnectionError:
             pass
         finally:

@@ -44,8 +44,8 @@ class SubHeaderLabel(GlowLabel):
 
 
 class IconButton(QtWidgets.QPushButton):
-    def __init__(self, icon: str, color: str, size: int):
-        super().__init__()
+    def __init__(self, icon: str, color: str, size: int, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.setObjectName("IconButton")
 
         self.setIcon(QtGui.QIcon(load_colored_svg(icon, color, size)))
@@ -107,83 +107,6 @@ class TimeWidget(HeaderLabel):
     def update_time(self):
         time = datetime.datetime.now()
         self.setText(time.strftime(self.time_format))
-
-
-class MusicEntryDescriptor(QtWidgets.QLabel):
-    def setText(self, a0: str):  # noqa: N802
-        super().setText(f"|{a0}¬")
-        self.setObjectName("MusicEntryDescriptor")
-        self.setMinimumWidth(196)
-        self.setAlignment(
-            QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter,
-        )
-
-
-class MusicEntry(QtWidgets.QWidget):
-    def __init__(
-        self,
-        description: str,
-        example: str | None = None,
-        text: str | None = None,
-    ):
-        super().__init__()
-
-        layout = QtWidgets.QHBoxLayout(self)
-        self.descriptor = MusicEntryDescriptor()
-        layout.addWidget(self.descriptor)
-
-        self.set_descriptor_text(description)
-
-        self.entry = QtWidgets.QLineEdit()
-        layout.addWidget(self.entry)
-
-        if text is not None:
-            self.entry.setText(text)
-
-        if example is not None:
-            self.entry.setPlaceholderText(example)
-
-    def text(self) -> str | None:
-        return self.entry.text() if self.entry.text() else None
-
-    def setText(self, text: str):  # noqa: N802
-        self.entry.setText(text)
-
-    def set_descriptor_text(self, text: str):
-        self.descriptor.setText(text)
-
-
-class MusicWishWidget(QtWidgets.QGroupBox):
-    def __init__(self):
-        super().__init__()
-        self.setObjectName("MusicWishWidget")
-
-        self.setGraphicsEffect(build_accent1_glow_effect())
-
-        self._build_ui()
-
-    def _build_ui(self):
-        layout = QtWidgets.QVBoxLayout(self)
-
-        self.status_widget = StatusWidget(
-            visible=False,
-        )
-        layout.addWidget(self.status_widget)
-
-        self.music_title = MusicEntry(CONFIG.selected_language.music_title)
-        layout.addWidget(self.music_title)
-
-        self.artist = MusicEntry(CONFIG.selected_language.music_interpret)
-        layout.addWidget(self.artist)
-
-        self.sender_name = MusicEntry(CONFIG.selected_language.music_sender)
-        layout.addWidget(self.sender_name)
-
-        self.receiver_name = MusicEntry(CONFIG.selected_language.music_receiver)
-        layout.addWidget(self.receiver_name)
-
-        self.message = MusicEntry(CONFIG.selected_language.music_message)
-        layout.addWidget(self.message)
 
 
 class LanguageButton(QtWidgets.QPushButton):
@@ -392,8 +315,12 @@ class LoadingModal(QtWidgets.QDialog):
 
 class RotatingBanner(GlowLabel):
     def __init__(self, text: str):
-        super().__init__(text)
+        super().__init__()
         self.setObjectName("RotatingLabel")
+
+        self.reset_text(text)
+
+        self.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.rotate_text)
@@ -404,3 +331,8 @@ class RotatingBanner(GlowLabel):
         current_text = self.text()
         rotated_text = current_text[1:] + current_text[0]
         self.setText(rotated_text)
+
+    def reset_text(self, text: str):
+        while len(text) < 100:
+            text = text*2
+        self.setText(text)

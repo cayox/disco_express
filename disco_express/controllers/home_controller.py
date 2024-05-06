@@ -32,7 +32,7 @@ class HomeController(Controller[HomeView]):
         self.view.music_wish_button.setText(language.home_music_wish_btn)
         self.view.info_button.setText(language.home_info_btn)
         self.view.sub_heading.setText(language.heading_home)
-        self.view.rotating_banner.setText(language.rotating_banner)
+        self.view.rotating_banner.reset_text(language.rotating_banner)
 
     @QtCore.pyqtSlot()
     def refresh_banner(self):

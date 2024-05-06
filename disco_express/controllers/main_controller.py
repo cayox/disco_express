@@ -15,6 +15,10 @@ class MainController(Controller[MainView]):
     def __init__(self):
         super().__init__(MainView)
 
+        self.screensaver_timer = QtCore.QTimer(self)
+        self.screensaver_timer.setSingleShot(True)
+        self.screensaver_timer.timeout.connect(lambda: None)
+
     @property
     def view(self) -> MainView:
         return self._view
