@@ -333,6 +333,7 @@ class RotatingBanner(GlowLabel):
         self.setText(rotated_text)
 
     def reset_text(self, text: str):
-        while len(text) < 100:
-            text = text*2
+        min_text_length = 100
+        while len(text) < min_text_length:
+            text = text * 2
         self.setText(text)

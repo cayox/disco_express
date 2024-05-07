@@ -6,7 +6,9 @@ from disco_express.config import APP_CONFIG_ROOT
 
 
 def load_colored_svg(
-    relative_svg_path: str, color: str, icon_size: int = 32
+    relative_svg_path: str,
+    color: str,
+    icon_size: int = 32,
 ) -> QtGui.QPixmap:
     """Load and color an SVG, returning a QPixmap."""
     # Read SVG data

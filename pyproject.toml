@@ -93,6 +93,8 @@ ignore = [
     "RUF005",  # iterable unpacking instead of concatenation
     "RUF012",  # Mutable class attributes should be annotated with `typing.ClassVar`
     "ISC003",  # explicitly concatenated string
+    "ANN002",  # type annotation for args
+    "ANN003",  # type annotation for kwargs
 
     # Temporary dev ignore
     "D1",

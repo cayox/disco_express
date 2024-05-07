@@ -19,7 +19,8 @@ class HomeController(Controller[HomeView]):
         self.timer.start()
 
         self.jukebox_client = JukeBoxClient(
-            CONFIG.network.server_ip, CONFIG.network.server_port
+            CONFIG.network.server_ip,
+            CONFIG.network.server_port,
         )
         self.refresh_banner()
 
@@ -44,10 +45,12 @@ class HomeController(Controller[HomeView]):
 
         for index, language in enumerate(CONFIG.languages):
             CONFIG.languages[index].rotating_banner = getattr(
-                banner_texts, language.language_name
+                banner_texts,
+                language.language_name,
             )
 
         CONFIG.selected_language.rotating_banner = getattr(
-            banner_texts, CONFIG.selected_language.language_name
+            banner_texts,
+            CONFIG.selected_language.language_name,
         )
         self.set_selected_language()

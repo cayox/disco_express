@@ -1,8 +1,12 @@
-from PyQt6 import QtWidgets, QtCore
+from PyQt6 import QtCore, QtWidgets
 
 from disco_express.config import CONFIG
-from disco_express.views.widgets import Button, SubHeaderLabel, \
-    build_accent1_glow_effect, StatusWidget
+from disco_express.views.widgets import (
+    Button,
+    StatusWidget,
+    SubHeaderLabel,
+    build_accent1_glow_effect,
+)
 
 from .view import View
 
@@ -19,11 +23,11 @@ class MusicEntryDescriptor(QtWidgets.QLabel):
 
 class MusicEntry(QtWidgets.QWidget):
     def __init__(
-            self,
-            description: str,
-            example: str | None = None,
-            text: str | None = None,
-            max_length: int = 32
+        self,
+        description: str,
+        example: str | None = None,
+        text: str | None = None,
+        max_length: int = 32,
     ):
         super().__init__()
 
@@ -70,19 +74,34 @@ class MusicWishWidget(QtWidgets.QGroupBox):
         )
         layout.addWidget(self.status_widget)
 
-        self.music_title = MusicEntry(CONFIG.selected_language.music_title, max_length=CONFIG.general.max_input_length)
+        self.music_title = MusicEntry(
+            CONFIG.selected_language.music_title,
+            max_length=CONFIG.general.max_input_length,
+        )
         layout.addWidget(self.music_title)
 
-        self.artist = MusicEntry(CONFIG.selected_language.music_interpret, max_length=CONFIG.general.max_input_length)
+        self.artist = MusicEntry(
+            CONFIG.selected_language.music_interpret,
+            max_length=CONFIG.general.max_input_length,
+        )
         layout.addWidget(self.artist)
 
-        self.sender_name = MusicEntry(CONFIG.selected_language.music_sender, max_length=CONFIG.general.max_input_length)
+        self.sender_name = MusicEntry(
+            CONFIG.selected_language.music_sender,
+            max_length=CONFIG.general.max_input_length,
+        )
         layout.addWidget(self.sender_name)
 
-        self.receiver_name = MusicEntry(CONFIG.selected_language.music_receiver, max_length=CONFIG.general.max_input_length)
+        self.receiver_name = MusicEntry(
+            CONFIG.selected_language.music_receiver,
+            max_length=CONFIG.general.max_input_length,
+        )
         layout.addWidget(self.receiver_name)
 
-        self.message = MusicEntry(CONFIG.selected_language.music_message, max_length=CONFIG.general.max_input_length_message)
+        self.message = MusicEntry(
+            CONFIG.selected_language.music_message,
+            max_length=CONFIG.general.max_input_length_message,
+        )
         layout.addWidget(self.message)
 
 

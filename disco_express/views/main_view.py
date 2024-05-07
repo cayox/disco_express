@@ -3,12 +3,7 @@ import os
 from PyQt6 import QtCore, QtGui, QtWidgets
 
 from disco_express.config import APP_CONFIG_ROOT, CONFIG
-from disco_express.views.widgets import (
-    IconButton,
-    TimeWidget,
-    TitleLabel
-)
-from .screensaver import ScreenSaver
+from disco_express.views.widgets import IconButton, TimeWidget, TitleLabel
 
 from .view import View
 
@@ -91,14 +86,12 @@ class MainView(QtWidgets.QMainWindow):
         """Override the close event to prevent closing."""
         event.ignore()  # Ignore the close event
 
-    def mouseMoveEvent(self, event: QtGui.QMouseEvent):
-        """
-        Dismiss the screensaver if the mouse is moved.
-        """
+    def mouseMoveEvent(self, event: QtGui.QMouseEvent):  # noqa: N802, ARG002, inherited
+        """Dismiss the screensaver if the mouse is moved."""
         current_position = QtGui.QCursor.pos()
         if current_position != self.last_mouse_position:
             self.hide()
-            self.screen_saver_timer.start(CONFIG.general.screen_saver_start_time*1000)
+            self.screen_saver_timer.start(CONFIG.general.screen_saver_start_time * 1000)
 
     def show_screen_saver(self):
         self.screen_saver.showFullScreen()

@@ -1,18 +1,16 @@
 import os.path
 
-from PyQt6 import QtCore, QtGui, QtWidgets, QtPdf, QtPdfWidgets
+from PyQt6 import QtCore, QtGui, QtPdf, QtPdfWidgets, QtWidgets
 
-from disco_express.config import CONFIG, APP_CONFIG_ROOT
+from disco_express.config import APP_CONFIG_ROOT, CONFIG
 from disco_express.views.widgets import (
     Button,
+    IconButton,
     SubHeaderLabel,
     build_accent1_glow_effect,
-    IconButton
 )
 
 from .view import View
-
-import fitz  # PyMuPDF
 
 
 class ScrollableImage(QtWidgets.QLabel):
@@ -26,8 +24,9 @@ class ScrollableImage(QtWidgets.QLabel):
     def update_image(self):
         self.setPixmap(
             QtGui.QPixmap.fromImage(self.image).scaled(
-                self.image.size() * self.scale_factor, QtCore.Qt.AspectRatioMode.KeepAspectRatio
-            )
+                self.image.size() * self.scale_factor,
+                QtCore.Qt.AspectRatioMode.KeepAspectRatio,
+            ),
         )
         self.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
@@ -65,34 +64,41 @@ class ImageViewer(QtWidgets.QDialog):
 
         icon_size = 32
 
-        self.zoom_in_button = IconButton(CONFIG.icons.zoom_in_icon,
-                                         color=CONFIG.style.colors.accent1_glow,
-                                         size=icon_size, parent=self)
+        self.zoom_in_button = IconButton(
+            CONFIG.icons.zoom_in_icon,
+            color=CONFIG.style.colors.accent1_glow,
+            size=icon_size,
+            parent=self,
+        )
         self.zoom_in_button.clicked.connect(self.image_label.zoom_in)
         self.zoom_in_button.setFixedSize(icon_size, icon_size)
 
-        self.zoom_out_button = IconButton(CONFIG.icons.zoom_out_icon,
-                                          color=CONFIG.style.colors.accent1_glow,
-                                          size=icon_size, parent=self)
+        self.zoom_out_button = IconButton(
+            CONFIG.icons.zoom_out_icon,
+            color=CONFIG.style.colors.accent1_glow,
+            size=icon_size,
+            parent=self,
+        )
         self.zoom_out_button.clicked.connect(self.image_label.zoom_out)
         self.zoom_out_button.setFixedSize(icon_size, icon_size)
 
-    def resizeEvent(self, a0: QtGui.QResizeEvent):
+    def resizeEvent(self, a0: QtGui.QResizeEvent):  # noqa: N802, inherited
         self.resize(a0.size())
         super().resizeEvent(a0)
 
     def resize(self, a0: QtCore.QSize):
         super().resize(a0)
 
-        x_margin = int(a0.width()*0.033)
-        y_margin = int(a0.height()*0.08)
+        x_margin = int(a0.width() * 0.033)
+        y_margin = int(a0.height() * 0.08)
 
-        y_start = a0.height()-y_margin - self.close_button.height() - 32
-        point = QtCore.QPoint(a0.width()-x_margin, y_start)
+        y_start = a0.height() - y_margin - self.close_button.height() - 32
+        point = QtCore.QPoint(a0.width() - x_margin, y_start)
         self.zoom_in_button.move(point)
 
         self.zoom_out_button.move(
-            QtCore.QPoint(a0.width() - x_margin, int(y_start + 40)))
+            QtCore.QPoint(a0.width() - x_margin, int(y_start + 40))
+        )
 
 
 class PdfViewer(QtWidgets.QDialog):
@@ -125,13 +131,23 @@ class PdfViewer(QtWidgets.QDialog):
         layout.addWidget(self.close_button)
 
         self.setLayout(layout)
-        icon_size=32
+        icon_size = 32
 
-        self.zoom_in_button = IconButton(CONFIG.icons.zoom_in_icon, color=CONFIG.style.colors.accent1_glow, size=icon_size, parent=self)
+        self.zoom_in_button = IconButton(
+            CONFIG.icons.zoom_in_icon,
+            color=CONFIG.style.colors.accent1_glow,
+            size=icon_size,
+            parent=self,
+        )
         self.zoom_in_button.clicked.connect(self.zoom_in)
         self.zoom_in_button.setFixedSize(icon_size, icon_size)
 
-        self.zoom_out_button = IconButton(CONFIG.icons.zoom_out_icon, color=CONFIG.style.colors.accent1_glow, size=icon_size, parent=self)
+        self.zoom_out_button = IconButton(
+            CONFIG.icons.zoom_out_icon,
+            color=CONFIG.style.colors.accent1_glow,
+            size=icon_size,
+            parent=self,
+        )
         self.zoom_out_button.clicked.connect(self.zoom_out)
         self.zoom_out_button.setFixedSize(icon_size, icon_size)
 
@@ -142,23 +158,24 @@ class PdfViewer(QtWidgets.QDialog):
     def zoom_out(self):
         self.scale_factor /= 1.25
         self.view.setZoomFactor(self.scale_factor)
-    
-    def resizeEvent(self, a0: QtGui.QResizeEvent):
+
+    def resizeEvent(self, a0: QtGui.QResizeEvent):  # noqa: N802, inherited
         self.resize(a0.size())
         super().resizeEvent(a0)
 
     def resize(self, a0: QtCore.QSize):
         super().resize(a0)
 
-        x_margin = int(a0.width()*0.033)
-        y_margin = int(a0.height()*0.08)
+        x_margin = int(a0.width() * 0.033)
+        y_margin = int(a0.height() * 0.08)
 
-        y_start = a0.height()-y_margin - self.close_button.height() - 32
-        point = QtCore.QPoint(a0.width()-x_margin, y_start)
+        y_start = a0.height() - y_margin - self.close_button.height() - 32
+        point = QtCore.QPoint(a0.width() - x_margin, y_start)
         self.zoom_in_button.move(point)
 
         self.zoom_out_button.move(
-            QtCore.QPoint(a0.width() - x_margin, int(y_start + 40)))
+            QtCore.QPoint(a0.width() - x_margin, int(y_start + 40))
+        )
 
 
 class DocumentWidget(QtWidgets.QPushButton):
@@ -212,10 +229,7 @@ class InfoView(View):
         sender: DocumentWidget = self.sender()
 
         file = sender.path
-        if file.lower().endswith(".pdf"):
-            dialog_class = PdfViewer
-        else:
-            dialog_class = ImageViewer
+        dialog_class = PdfViewer if file.lower().endswith(".pdf") else ImageViewer
         dialog = dialog_class(file)
 
         dialog.showMaximized()

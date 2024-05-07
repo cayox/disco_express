@@ -5,7 +5,7 @@ import sys
 
 from PyQt6 import QtGui, QtWidgets
 
-from disco_express.config import ASSETS, CONFIG, APP_CONFIG_ROOT
+from disco_express.config import APP_CONFIG_ROOT, ASSETS, CONFIG
 from disco_express.controllers import MainController
 from disco_express.log import setup_basic_logger
 
@@ -15,7 +15,8 @@ FONTS = os.path.join(ASSETS, "fonts")
 log_file = os.path.join(
     APP_CONFIG_ROOT,
     CONFIG.general.log_directory,
-    f"disco_express_{datetime.datetime.now().strftime('%d-%m-%Y_%H-%M-%S')}.log")
+    f"disco_express_{datetime.datetime.now().strftime('%d-%m-%Y_%H-%M-%S')}.log",
+)
 os.makedirs(os.path.dirname(log_file), exist_ok=True)
 setup_basic_logger(log_file)
 
