@@ -85,13 +85,3 @@ class MainView(QtWidgets.QMainWindow):
     def closeEvent(self, event: QtGui.QCloseEvent):  # noqa: N802, inherited
         """Override the close event to prevent closing."""
         event.ignore()  # Ignore the close event
-
-    def mouseMoveEvent(self, event: QtGui.QMouseEvent):  # noqa: N802, ARG002, inherited
-        """Dismiss the screensaver if the mouse is moved."""
-        current_position = QtGui.QCursor.pos()
-        if current_position != self.last_mouse_position:
-            self.hide()
-            self.screen_saver_timer.start(CONFIG.general.screen_saver_start_time * 1000)
-
-    def show_screen_saver(self):
-        self.screen_saver.showFullScreen()

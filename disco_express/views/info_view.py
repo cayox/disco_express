@@ -2,6 +2,8 @@ import os.path
 import fitz  # PyMuPDF
 
 from PyQt6 import QtCore, QtGui, QtWidgets
+from pdf2image import convert_from_path
+from PIL import Image
 
 from disco_express.config import CONFIG, APP_CONFIG_ROOT
 from disco_express.views.widgets import Button, IconButton, SubHeaderLabel, build_accent1_glow_effect
@@ -17,7 +19,7 @@ class ScrollableImage(QtWidgets.QLabel):
         super().__init__()
         self.setObjectName("ImageViewer")
         self.pixmap = pixmap
-        self.scale_factor = 1.0
+        self.scale_factor = 2
         self.update_image()
 
     def update_image(self):
@@ -130,7 +132,7 @@ class PdfViewer(QtWidgets.QDialog):
     def __init__(self, pdf_file: str):
         super().__init__()
         self.setObjectName("PdfViewer")
-        self.doc = fitz.open(pdf_file)
+        self.pdf_file = pdf_file
         self.init_ui()
 
     def init_ui(self):
@@ -170,33 +172,24 @@ class PdfViewer(QtWidgets.QDialog):
         self.zoom_out_button.setFixedSize(icon_size, icon_size)
 
     def load_pages(self) -> QtGui.QPixmap:
-        """
-        Render all pages of the PDF and combine them into a single QPixmap with higher quality.
-        """
-        doc_pixmap = None
-        zoom = 2.0  # Zoom factor for higher resolution
-        mat = fitz.Matrix(zoom, zoom)  # The transformation matrix
+        images = convert_from_path(self.pdf_file, dpi=200)
+        if not images:
+            return QtGui.QPixmap()
 
-        for page_num in range(self.doc.page_count):
-            page = self.doc.load_page(page_num)
-            pix = page.get_pixmap(
-                matrix=mat)  # Use the matrix to increase the resolution
-            image = QtGui.QImage(pix.samples, pix.width, pix.height, pix.stride,
-                                 QtGui.QImage.Format.Format_RGB888)
-            pixmap = QtGui.QPixmap.fromImage(image)
-            if doc_pixmap is None:
-                doc_pixmap = pixmap
-            else:
-                # Create a new pixmap to hold this and the previous pages
-                temp_pixmap = QtGui.QPixmap(max(doc_pixmap.width(), pixmap.width()),
-                                            doc_pixmap.height() + pixmap.height())
-                temp_pixmap.fill(QtCore.Qt.GlobalColor.white)
-                painter = QtGui.QPainter(temp_pixmap)
-                painter.drawPixmap(0, 0, doc_pixmap)
-                painter.drawPixmap(0, doc_pixmap.height(), pixmap)
-                painter.end()
-                doc_pixmap = temp_pixmap
-        return doc_pixmap
+        # Combine images into a single image
+        total_height = sum(image.height for image in images)
+        max_width = max(image.width for image in images)
+        combined_image = Image.new("RGB", (max_width, total_height))
+        y_offset = 0
+
+        for img in images:
+            combined_image.paste(img, (0, y_offset))
+            y_offset += img.height
+
+        # Save to a temporary file
+        temp_image_path = "/tmp/combined_pdf_image.jpg"
+        combined_image.save(temp_image_path)
+        return QtGui.QPixmap(temp_image_path)
 
     def resizeEvent(self, a0: QtGui.QResizeEvent):
         """
