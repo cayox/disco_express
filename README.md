@@ -225,6 +225,12 @@ Diese Datei kann als PDF generiert werden durch:
 
 ```poetry run poe docs```
 
+### Raspberry Pi
+Projekt in ``/opt/disco_express``
+Autostart in ``~/.config/autostart/disco_express.desktop``
+Screensaver Images in ``~/screensaver_images``
+
+
 # Pflichtangaben
 Icons von [Fontawesome](https://fontawesome.com/)
 
