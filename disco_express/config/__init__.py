@@ -3,6 +3,7 @@ import os.path
 import shutil
 import sys
 import tomllib
+import platform
 
 from .models import Config, Song
 
@@ -15,6 +16,9 @@ def get_application_path() -> str:
 
 
 APP_CONFIG_ROOT = os.path.expanduser("~/disco_express")
+if os.path.isfile("/etc/rpi-issue"):
+    APP_CONFIG_ROOT = "/etc/disco_express"
+
 ASSETS = os.path.join(get_application_path(), "assets")
 
 
