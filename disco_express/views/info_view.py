@@ -1,5 +1,4 @@
 import os.path
-import fitz  # PyMuPDF
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 from pdf2image import convert_from_path
