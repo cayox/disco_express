@@ -1,49 +1,61 @@
 import os.path
+import fitz  # PyMuPDF
 
-from PyQt6 import QtCore, QtGui, QtPdf, QtPdfWidgets, QtWidgets
+from PyQt6 import QtCore, QtGui, QtWidgets
 
-from disco_express.config import APP_CONFIG_ROOT, CONFIG
-from disco_express.views.widgets import (
-    Button,
-    IconButton,
-    SubHeaderLabel,
-    build_accent1_glow_effect,
-)
+from disco_express.config import CONFIG, APP_CONFIG_ROOT
+from disco_express.views.widgets import Button, IconButton, SubHeaderLabel, build_accent1_glow_effect
 
 from .view import View
 
 
 class ScrollableImage(QtWidgets.QLabel):
-    def __init__(self, image: QtGui.QImage):
+    """
+    A label widget that displays an image with zoom in and zoom out capabilities.
+    """
+    def __init__(self, pixmap: QtGui.QPixmap):
         super().__init__()
         self.setObjectName("ImageViewer")
-        self.image = image
+        self.pixmap = pixmap
         self.scale_factor = 1.0
         self.update_image()
 
     def update_image(self):
-        self.setPixmap(
-            QtGui.QPixmap.fromImage(self.image).scaled(
-                self.image.size() * self.scale_factor,
-                QtCore.Qt.AspectRatioMode.KeepAspectRatio,
-            ),
+        """
+        Update the image display based on the current scale factor.
+        """
+        scaled_pixmap = self.pixmap.scaled(
+            self.size() * self.scale_factor,
+            QtCore.Qt.AspectRatioMode.KeepAspectRatio,
+            QtCore.Qt.TransformationMode.SmoothTransformation
         )
+        self.setPixmap(scaled_pixmap)
         self.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
     def zoom_in(self):
-        self.scale_factor *= 1.25
+        """
+        Increase the scale factor for the image.
+        """
+        self.scale_factor = 1.25
         self.update_image()
 
     def zoom_out(self):
-        self.scale_factor /= 1.25
+        """
+        Decrease the scale factor for the image.
+        """
+        self.scale_factor = 0.75
         self.update_image()
 
 
 class ImageViewer(QtWidgets.QDialog):
-    def __init__(self, image: str):
+    """
+    Dialog to display an image with zoom and scroll capabilities.
+    """
+    def __init__(self, image_path: str):
         super().__init__()
         self.setObjectName("ImageViewer")
-        self.image_label = ScrollableImage(QtGui.QImage(image))
+        image = QtGui.QImage(image_path)
+        self.image_label = ScrollableImage(QtGui.QPixmap.fromImage(image))
         self.init_ui()
 
         self.auto_close_timer = QtCore.QTimer(self)
@@ -52,6 +64,9 @@ class ImageViewer(QtWidgets.QDialog):
         self.auto_close_timer.start(CONFIG.general.auto_close_time * 1000)
 
     def init_ui(self):
+        """
+        Initialize the user interface components.
+        """
         layout = QtWidgets.QVBoxLayout(self)
         scroll_area = QtWidgets.QScrollArea()
         scroll_area.setWidgetResizable(True)
@@ -82,11 +97,17 @@ class ImageViewer(QtWidgets.QDialog):
         self.zoom_out_button.clicked.connect(self.image_label.zoom_out)
         self.zoom_out_button.setFixedSize(icon_size, icon_size)
 
-    def resizeEvent(self, a0: QtGui.QResizeEvent):  # noqa: N802, inherited
+    def resizeEvent(self, a0: QtGui.QResizeEvent):
+        """
+        Handle the resize event.
+        """
         self.resize(a0.size())
         super().resizeEvent(a0)
 
     def resize(self, a0: QtCore.QSize):
+        """
+        Adjust the dialog size based on the size of the viewport.
+        """
         super().resize(a0)
 
         x_margin = int(a0.width() * 0.033)
@@ -102,35 +123,32 @@ class ImageViewer(QtWidgets.QDialog):
 
 
 class PdfViewer(QtWidgets.QDialog):
+    """
+    Dialog to display a PDF file with zoom and scroll capabilities, using PyMuPDF for rendering.
+    Loads all pages of the PDF into a single image for viewing.
+    """
     def __init__(self, pdf_file: str):
         super().__init__()
-        self.setObjectName("ImageViewer")
-        self.pdf_doc = QtPdf.QPdfDocument(self)
-        self.pdf_doc.load(pdf_file)
-        self.page_num = 0
-        self.scale_factor = 1.0
+        self.setObjectName("PdfViewer")
+        self.doc = fitz.open(pdf_file)
         self.init_ui()
 
-        self.auto_close_timer = QtCore.QTimer(self)
-        self.auto_close_timer.setSingleShot(True)
-        self.auto_close_timer.timeout.connect(self.close)
-        self.auto_close_timer.start(CONFIG.general.auto_close_time * 1000)
-
     def init_ui(self):
+        """
+        Initialize the user interface components.
+        """
         layout = QtWidgets.QVBoxLayout(self)
-        layout.setContentsMargins(0, 0, 0, 0)
+        self.scroll_area = QtWidgets.QScrollArea()
+        self.scroll_area.setWidgetResizable(True)
+        layout.addWidget(self.scroll_area)
 
-        self.view = QtPdfWidgets.QPdfView(self)
-        self.view.setDocument(self.pdf_doc)
-        self.view.setPageMode(QtPdfWidgets.QPdfView.PageMode.MultiPage)
-        self.view.setZoomFactor(self.scale_factor)
-        layout.addWidget(self.view)
+        self.image_label = ScrollableImage(self.load_pages())
+        self.scroll_area.setWidget(self.image_label)
 
         self.close_button = Button("Close")
         self.close_button.clicked.connect(self.close)
         layout.addWidget(self.close_button)
 
-        self.setLayout(layout)
         icon_size = 32
 
         self.zoom_in_button = IconButton(
@@ -139,7 +157,7 @@ class PdfViewer(QtWidgets.QDialog):
             size=icon_size,
             parent=self,
         )
-        self.zoom_in_button.clicked.connect(self.zoom_in)
+        self.zoom_in_button.clicked.connect(self.image_label.zoom_in)
         self.zoom_in_button.setFixedSize(icon_size, icon_size)
 
         self.zoom_out_button = IconButton(
@@ -148,22 +166,49 @@ class PdfViewer(QtWidgets.QDialog):
             size=icon_size,
             parent=self,
         )
-        self.zoom_out_button.clicked.connect(self.zoom_out)
+        self.zoom_out_button.clicked.connect(self.image_label.zoom_out)
         self.zoom_out_button.setFixedSize(icon_size, icon_size)
 
-    def zoom_in(self):
-        self.scale_factor *= 1.25
-        self.view.setZoomFactor(self.scale_factor)
+    def load_pages(self) -> QtGui.QPixmap:
+        """
+        Render all pages of the PDF and combine them into a single QPixmap with higher quality.
+        """
+        doc_pixmap = None
+        zoom = 2.0  # Zoom factor for higher resolution
+        mat = fitz.Matrix(zoom, zoom)  # The transformation matrix
 
-    def zoom_out(self):
-        self.scale_factor /= 1.25
-        self.view.setZoomFactor(self.scale_factor)
+        for page_num in range(self.doc.page_count):
+            page = self.doc.load_page(page_num)
+            pix = page.get_pixmap(
+                matrix=mat)  # Use the matrix to increase the resolution
+            image = QtGui.QImage(pix.samples, pix.width, pix.height, pix.stride,
+                                 QtGui.QImage.Format.Format_RGB888)
+            pixmap = QtGui.QPixmap.fromImage(image)
+            if doc_pixmap is None:
+                doc_pixmap = pixmap
+            else:
+                # Create a new pixmap to hold this and the previous pages
+                temp_pixmap = QtGui.QPixmap(max(doc_pixmap.width(), pixmap.width()),
+                                            doc_pixmap.height() + pixmap.height())
+                temp_pixmap.fill(QtCore.Qt.GlobalColor.white)
+                painter = QtGui.QPainter(temp_pixmap)
+                painter.drawPixmap(0, 0, doc_pixmap)
+                painter.drawPixmap(0, doc_pixmap.height(), pixmap)
+                painter.end()
+                doc_pixmap = temp_pixmap
+        return doc_pixmap
 
-    def resizeEvent(self, a0: QtGui.QResizeEvent):  # noqa: N802, inherited
+    def resizeEvent(self, a0: QtGui.QResizeEvent):
+        """
+        Handle the resize event.
+        """
         self.resize(a0.size())
         super().resizeEvent(a0)
 
     def resize(self, a0: QtCore.QSize):
+        """
+        Adjust the dialog size based on the size of the viewport.
+        """
         super().resize(a0)
 
         x_margin = int(a0.width() * 0.033)
