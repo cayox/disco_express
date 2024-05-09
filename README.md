@@ -6,7 +6,7 @@ Die App kommuniziert mit dem Disco Express Server via HTTP.
 ## Einstellungen
 Alle Einstellungen können über die Config Datei und die dazugehörigen Dateien gemacht
 werden. Dazu erstellt das Programm unter ``~/disco_express`` einen Ordner mit allen
-nötigen Dateien und Verzeichnissen. 
+nötigen Dateien und Verzeichnissen.
 
 ### Default Config Datei
 Die standard Config Datei sieht wie folgt aus:
@@ -68,7 +68,7 @@ zoom_out_icon = "icons/zoom-out.svg"
 
 [network]
 # hier die IP adresse vom Server eintragen
-server_ip = "localhost"
+server_ip = "192.168.1.1"
 # Port muss beim Server und Client gleich sein. Standard ist 8080
 server_port = 8080
 

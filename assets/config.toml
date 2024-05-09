@@ -55,7 +55,7 @@ zoom_out_icon = "icons/zoom-out.svg"
 
 [network]
 # hier die IP adresse vom Server eintragen
-server_ip = "localhost"
+server_ip = "192.168.1.1"
 # Port muss beim Server und Client gleich sein. Standard ist 8080
 server_port = 8080
 
