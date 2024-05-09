@@ -21,7 +21,7 @@ ASSETS = os.path.join(get_application_path(), "assets")
 def checkout_files():
     os.makedirs(APP_CONFIG_ROOT, exist_ok=True)
 
-    dirs_to_checkout = ["img", "data", "icons", "screen_saver"]
+    dirs_to_checkout = ["img", "data", "icons"]
     for checkout_dir in dirs_to_checkout:
         dst = os.path.join(APP_CONFIG_ROOT, checkout_dir)
         if not os.path.isdir(dst):

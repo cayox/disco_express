@@ -9,7 +9,6 @@ class Song(BaseModel):
 
 class ColorsConfig(BaseModel):
     background_color: str
-    text_color: str
 
     accent1: str
     accent1_glow: str
@@ -109,10 +108,6 @@ class GeneralConfig(BaseModel):
 
     max_input_length: int
     max_input_length_message: int
-
-    screen_saver_images: str
-    screen_saver_rotation_speed: int
-    screen_saver_start_time: int
 
 
 class Config(BaseModel):
