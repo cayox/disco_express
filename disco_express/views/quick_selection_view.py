@@ -17,6 +17,16 @@ from .helpers import load_colored_svg
 
 
 class SongRow(QtWidgets.QWidget):
+    """Widget to display a row of the song widget.
+
+    Usually to display the artist or the title of the song.
+
+    Args:
+        icon: the icon to represent the shown information
+        description: the description of the shown information
+        value: the actual information
+        plays: how many plays the song has. Only displayed if > 0
+    """
     ICON_SIZE = 48
 
     def __init__(self, icon: str, description: str, value: str, plays: int = 0):
@@ -67,6 +77,13 @@ class SongRow(QtWidgets.QWidget):
 
 
 class SongWidget(QtWidgets.QGroupBox):
+    """Widget to display one particular song.
+
+    Args:
+        index: the index of the song. Is displayed within the widget.
+        song: the song to display.
+        show_plays: whether the plays of the song should be shown.
+    """
     clicked = QtCore.pyqtSignal()
 
     def __init__(self, index: int, song: Song, show_plays: bool = False):
@@ -133,6 +150,12 @@ class SongWidget(QtWidgets.QGroupBox):
 
 
 class SongsListWidget(QtWidgets.QWidget):
+    """Widget to display a list of songs.
+
+    Args:
+        chart_list: the list of songs to display
+        show_plays: Whether the plays of each song should be displayed.
+    """
     song_selected = QtCore.pyqtSignal(Song)
 
     MAX_COLS = 3
@@ -180,6 +203,11 @@ class SongsListWidget(QtWidgets.QWidget):
 
 
 class QuickSelectionDialog(QtWidgets.QDialog):
+    """Dialog displaying the quick selection.
+
+    Args:
+        language: The language in which the quick selection should be displayed.
+    """
     MAX_COLS = 3
 
     def __init__(self, language: LanguageConfig):
@@ -207,9 +235,11 @@ class QuickSelectionDialog(QtWidgets.QDialog):
 
     @property
     def selected_song(self) -> Song | None:
+        """Method to retrieve the selected song."""
         return self._selected_song
 
     def load_charts(self) -> list[Song]:
+        """Method to load the local charts list."""
         return self.charts_manager.get_charts_list()
 
     def _build_ui(self):

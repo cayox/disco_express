@@ -22,12 +22,13 @@ setup_basic_logger(log_file)
 
 
 def load_fonts():
+    """Load all available fonts in the assets/fonts directory into the QFontDatabase."""
     for file in os.listdir(FONTS):
         font = os.path.join(FONTS, file)
         QtGui.QFontDatabase.addApplicationFont(font)
 
 
-def main():
+def main():  # noqa: D103
     app = QtWidgets.QApplication(sys.argv)
 
     load_fonts()

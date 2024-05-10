@@ -11,7 +11,7 @@ class PrettyFormatter(logging.Formatter):
         self.datefmt = "%Y-%m-%d %H:%M:%S"
         self.style = "{"
 
-    def format(self, record: logging.LogRecord) -> str:
+    def format(self, record: logging.LogRecord) -> str:  # noqa: D102
         # Setting the default format for the message before adding extras
         format_orig = self.fmt
         format_orig = "[{filename}:{lineno} ({funcName})] " + format_orig

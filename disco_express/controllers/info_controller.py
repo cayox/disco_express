@@ -11,6 +11,7 @@ from .controller import Controller
 
 
 class InfoController(Controller[InfoView]):
+    """Controller managing the InfoView."""
     def __init__(self):
         super().__init__(InfoView)
 
@@ -27,16 +28,22 @@ class InfoController(Controller[InfoView]):
         self.timer.timeout.connect(self.refresh_docs)
         self.timer.start()
 
-    def connect_view(self): ...
+    def connect_view(self):
+        """Overwrite method because its parent is abstract."""
 
     @QtCore.pyqtSlot()
     def set_selected_language(self):
+        """Method to set the selected langauge to all view managed by this controller."""
         language = self.get_language()
 
         self.view.sub_heading.setText(language.heading_information)
 
     @QtCore.pyqtSlot()
     def refresh_docs(self):
+        """Method to check for new documents and load them if available.
+
+        Loads all documents to CONFIG.general.documents_directory.
+        """
         try:
             documents = self.jukebox_client.list_documents()
             if documents == self._document_cache:

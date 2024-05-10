@@ -20,6 +20,7 @@ from .controller import Controller
 
 
 class MusicController(Controller[MusicWishView]):
+    """Controller controlling the behaviour of the MusicWishView."""
     music_request_sent = QtCore.pyqtSignal()
 
     def __init__(self):
@@ -35,6 +36,7 @@ class MusicController(Controller[MusicWishView]):
         self.chart_manager = ChartsManager(charts_path)
 
     def connect_view(self):
+        """Connect to MusicWishView and set langauges and check for connection."""
         logging.debug("Connecting controller to view")
         self.view.quick_select_button.clicked.connect(self.show_quick_selection)
         self.view.send_button.clicked.connect(self.send_music_request)
@@ -44,6 +46,7 @@ class MusicController(Controller[MusicWishView]):
 
     @QtCore.pyqtSlot()
     def set_selected_language(self):
+        """Method to set the new language upon langauge change."""
         language = self.get_language()
 
         self.view.music_wish_widget.music_title.set_descriptor_text(
@@ -72,6 +75,7 @@ class MusicController(Controller[MusicWishView]):
 
     @QtCore.pyqtSlot()
     def show_quick_selection(self):
+        """Method to display the QuickSelectionDialog and input the selected song, if available."""
         quick_selection_dialog = QuickSelectionDialog(self.get_language())
         if quick_selection_dialog.exec() <= 0:
             return
@@ -82,6 +86,11 @@ class MusicController(Controller[MusicWishView]):
 
     @QtCore.pyqtSlot()
     def send_music_request(self):
+        """Method to send the music request entered by the user.
+
+        Checks if necessary inputs are available and checks for profanity before sending.
+        Removes all input upon sending.
+        """
         title = self.view.music_wish_widget.music_title.text()
         if title is None:
             self.show_error(self.get_language().error_no_title)
@@ -132,6 +141,7 @@ class MusicController(Controller[MusicWishView]):
 
     @QtCore.pyqtSlot()
     def check_connection(self):
+        """Method to retrieve the current server status and display it."""
         try:
             status = self._client.get_status()
             self.set_connection_status(status)
@@ -139,6 +149,10 @@ class MusicController(Controller[MusicWishView]):
             self.set_connection_status(ServerStatus.ERROR)
 
     def set_connection_status(self, status: ServerStatus):
+        """Method to display the fetched status of the server.
+
+        Closes the app with exit code 0 if the status is SHUTDOWN.
+        """
         if status == ServerStatus.SHUTDOWN:
             sys.exit(0)
 
@@ -152,6 +166,11 @@ class MusicController(Controller[MusicWishView]):
         self.view.music_wish_widget.status_widget.set_status(status)
 
     def check_profanity(self, music_request: MusicRequest) -> str | None:
+        """Method to check for slurs in a music requests.
+
+        Returns:
+            the error text if a slur was found, else None
+        """
         for text in music_request.dict().values():
 
             if text is None or not contains_slur(text):

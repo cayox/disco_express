@@ -20,6 +20,7 @@ ASSETS = os.path.join(get_application_path(), "assets")
 
 
 def checkout_files():
+    """Check if necessary files are in APP_CONFIG_ROOT and copy them there if not."""
     os.makedirs(APP_CONFIG_ROOT, exist_ok=True)
 
     dirs_to_checkout = ["img", "data", "icons"]
@@ -49,12 +50,14 @@ with open(slurs_file, "rb") as f:
 
 
 def contains_slur(text: str) -> bool:
+    """Function to check if a text contains a slur."""
     words = text.lower().split(" ")
 
     return any(word in SLURS for word in words)
 
 
 def load_songs_from_csv(file_path: str) -> list[Song]:
+    """Function to load the songs from a csv file."""
     songs = []
     with open(file_path, newline="") as file:
         reader = csv.reader(file, delimiter=";")

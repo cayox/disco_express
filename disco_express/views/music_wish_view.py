@@ -12,7 +12,8 @@ from .view import View
 
 
 class MusicEntryDescriptor(QtWidgets.QLabel):
-    def setText(self, a0: str):  # noqa: N802
+    """Widget representing the descriptor text of the MusicEntry widget."""
+    def setText(self, a0: str):  # noqa: N802, D102, inherited
         super().setText(f"|{a0}¬")
         self.setObjectName("MusicEntryDescriptor")
         self.setMinimumWidth(196)
@@ -22,6 +23,14 @@ class MusicEntryDescriptor(QtWidgets.QLabel):
 
 
 class MusicEntry(QtWidgets.QWidget):
+    """Custom Widget to represent a QLineEdit with a description.
+
+    Args:
+        description: the description shown next to the QLineEdit
+        example: the example text (placeholder)
+        text: the actual text which should be set
+        max_length: the limit of characters for the QLineEdit
+    """
     def __init__(
         self,
         description: str,
@@ -48,16 +57,20 @@ class MusicEntry(QtWidgets.QWidget):
             self.entry.setPlaceholderText(example)
 
     def text(self) -> str | None:
+        """Retrieve the entered text."""
         return self.entry.text() if self.entry.text() else None
 
     def setText(self, text: str):  # noqa: N802
+        """Set the text of the QLineEdit to `text`."""
         self.entry.setText(text)
 
     def set_descriptor_text(self, text: str):
+        """Method to set the descriptor text to `text`."""
         self.descriptor.setText(text)
 
 
 class MusicWishWidget(QtWidgets.QGroupBox):
+    """Widget to display the input fields for a music wish."""
     def __init__(self):
         super().__init__()
         self.setObjectName("MusicWishWidget")
@@ -106,6 +119,7 @@ class MusicWishWidget(QtWidgets.QGroupBox):
 
 
 class MusicWishView(View):
+    """View to display the music wish input matrix."""
     def _build_ui(self):
         layout = QtWidgets.QVBoxLayout(self)
 

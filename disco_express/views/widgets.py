@@ -1,3 +1,4 @@
+# ruff: noqa: D102
 import datetime
 import os
 from typing import Any
@@ -12,6 +13,7 @@ from .helpers import load_colored_svg
 
 
 def build_accent1_glow_effect() -> QtWidgets.QGraphicsDropShadowEffect:
+    """Function to build a glow effect from CONFIG.style.colors.accent1_glow."""
     effect = QtWidgets.QGraphicsDropShadowEffect()
     effect.setOffset(0)
     effect.setBlurRadius(CONFIG.style.ui_glow_strength)
@@ -20,6 +22,7 @@ def build_accent1_glow_effect() -> QtWidgets.QGraphicsDropShadowEffect:
 
 
 def build_highlight_glow_effect() -> QtWidgets.QGraphicsDropShadowEffect:
+    """Function to build a glow effect from CONFIG.style.colors.highlight_glow."""
     effect = QtWidgets.QGraphicsDropShadowEffect()
     effect.setOffset(0)
     effect.setBlurRadius(CONFIG.style.text_glow_strength)
@@ -28,6 +31,7 @@ def build_highlight_glow_effect() -> QtWidgets.QGraphicsDropShadowEffect:
 
 
 class GlowLabel(QtWidgets.QLabel):
+    """Label where a glow effect is applied."""
     def __init__(self, *args: Any, **kwargs: Any):
         super().__init__(*args, **kwargs)
 
@@ -35,6 +39,10 @@ class GlowLabel(QtWidgets.QLabel):
 
 
 class SubHeaderLabel(GlowLabel):
+    """Label that is styled as a sub header in QSS stylesheet.
+
+    Has glow effect.
+    """
     def __init__(self, *args: Any, **kwargs: Any):
         super().__init__(*args, **kwargs)
 
@@ -44,6 +52,15 @@ class SubHeaderLabel(GlowLabel):
 
 
 class IconButton(QtWidgets.QPushButton):
+    """Button which displays an icon.
+
+    Has glow effect.
+
+    Args:
+        icon: the icon path to display.
+        color: the wanted color, works only for SVGs.
+        size: the wanted size for the icon.
+    """
     def __init__(self, icon: str, color: str, size: int, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.setObjectName("IconButton")
@@ -54,8 +71,13 @@ class IconButton(QtWidgets.QPushButton):
 
 
 class Button(QtWidgets.QPushButton):
+    """Button which formats the text in the respective JukeBox font.
+
+    Has glow effect.
+    """
     def __init__(self, text: str):
-        super().__init__(f"<{text}>")
+        super().__init__()
+        self.setText(text)
 
         self.setGraphicsEffect(build_accent1_glow_effect())
 
@@ -64,20 +86,33 @@ class Button(QtWidgets.QPushButton):
 
 
 class HeaderLabel(GlowLabel):
+    """Label that is styled as a header in QSS stylesheet.
+
+    Has glow effect.
+    """
     def __init__(self, *args: Any, **kwargs: Any):
         super().__init__(*args, **kwargs)
         self.setObjectName("HeaderLabel")
 
 
 class TitleLabel(GlowLabel):
+    """Label that is styled as a title in QSS stylesheet.
+
+    Has glow effect.
+    """
     def __init__(self, text: str):
         super().__init__(f"({text})")
         self.setObjectName("Title")
 
 
 class TimeWidget(HeaderLabel):
-    TIMER_INTERVAL = 1000
-    TIME_FORMAT = ""
+    """Widget representing a time or date, which updates automatically.
+
+    Args:
+        timer_interval: the intervall the time should be updated.
+        time_format: the format in which the time should be represented.
+            See datetime library for format options. Defaults to "%H:%M".
+    """
 
     def __init__(
         self,
@@ -110,6 +145,13 @@ class TimeWidget(HeaderLabel):
 
 
 class LanguageButton(QtWidgets.QPushButton):
+    """Button representing a Language.
+
+    Displays the icon of the language.
+
+    Args:
+        language: the language to represent.
+    """
     def __init__(self, language: LanguageConfig):
         super().__init__()
         self.setObjectName("LanguageButton")
@@ -125,10 +167,12 @@ class LanguageButton(QtWidgets.QPushButton):
 
     @QtCore.pyqtProperty(bool)
     def highlight(self) -> bool:
+        """Getter for highlighting the button via QSS stylesheet."""
         return self._highlight
 
     @highlight.setter
     def highlight(self, state: bool):
+        """Setter for highlighting the button via QSS stylesheet."""
         # Register change of state
         self._highlight = state
         # Update displayed style
@@ -136,6 +180,11 @@ class LanguageButton(QtWidgets.QPushButton):
 
 
 class LanguageSwitch(QtWidgets.QWidget):
+    """Widget for switching languages.
+
+    Uses all languages configured in the config.toml:
+    - CONFIG.languages
+    """
     language_switched = QtCore.pyqtSignal(LanguageConfig)
 
     def __init__(self, parent: QtWidgets.QWidget | None = None) -> None:
@@ -158,6 +207,7 @@ class LanguageSwitch(QtWidgets.QWidget):
 
     @QtCore.pyqtSlot()
     def on_language_change(self):
+        """Callback for handling when the language was changed."""
         sender: LanguageButton = self.sender()
         if self._language == sender.language:
             return
@@ -169,10 +219,20 @@ class LanguageSwitch(QtWidgets.QWidget):
         self.language_switched.emit(self._language)
 
     def get_selected_language(self) -> LanguageConfig:
+        """Retrieve the selected language."""
         return self._language
 
 
 class StatusWidget(QtWidgets.QWidget):
+    """Widget displaying the current server status, used for errors.
+
+    Sets text based on teh config.toml:
+    - CONFIG.selected_language.error_dj_unavailable
+    - CONFIG.selected_language.error_no_connection_to_server
+
+    Args:
+        visible: whether the widget should be visible upon startup
+    """
     ICON_SIZE = 48
 
     def __init__(self, visible: bool = False):
@@ -202,10 +262,16 @@ class StatusWidget(QtWidgets.QWidget):
 
         layout.addStretch()
 
-    def setText(self, text: str):  # noqa: N802
+    def setText(self, text: str):  # noqa: N802, inherited
         self.label.setText(text)
 
     def set_status(self, status: ServerStatus):
+        """Method to set the text and icons of the StatusWidget.
+
+        Sets text based on teh config.toml:
+        - CONFIG.selected_language.error_dj_unavailable
+        - CONFIG.selected_language.error_no_connection_to_server
+        """
         if status == ServerStatus.UNAVAILABLE:
             color = CONFIG.style.colors.red
             icon = load_colored_svg(
@@ -236,6 +302,13 @@ class StatusWidget(QtWidgets.QWidget):
 
 
 class LoadingModal(QtWidgets.QDialog):
+    """Modal showing a loading process.
+
+    Automatically increases the progressbar and displays the text configured in the config.toml:
+    - CONFIG.general.wish_sending_time
+    - CONFIG.selected_language.loading_description
+    - CONFIG.selected_language.loading_success
+    """
     def __init__(self):
         super().__init__()
 
@@ -314,6 +387,11 @@ class LoadingModal(QtWidgets.QDialog):
 
 
 class RotatingBanner(GlowLabel):
+    """Banner which scrolls through the text automatically.
+
+    Args:
+        text: the text to rotate
+    """
     def __init__(self, text: str):
         super().__init__()
         self.setObjectName("RotatingLabel")
@@ -328,11 +406,13 @@ class RotatingBanner(GlowLabel):
 
     @QtCore.pyqtSlot()
     def rotate_text(self):
+        """Method to rotate the text by appending the first letter to the end."""
         current_text = self.text()
         rotated_text = current_text[1:] + current_text[0]
         self.setText(rotated_text)
 
     def reset_text(self, text: str):
+        """Method to reset/set new `text`."""
         min_text_length = 100
         while len(text) < min_text_length:
             text = text * 2

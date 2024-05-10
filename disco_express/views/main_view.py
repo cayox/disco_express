@@ -9,6 +9,12 @@ from .view import View
 
 
 class CentralWidget(QtWidgets.QWidget):
+    """The central widget of the MainView, with a custom background.
+
+    Configurable via the config.toml:
+    - CONFIG.style.background_image
+    - CONFIG.style.background_darkness_factor
+    """
     def __init__(self):
         super().__init__()
 
@@ -19,27 +25,19 @@ class CentralWidget(QtWidgets.QWidget):
         self.setWindowFlags(QtCore.Qt.WindowType.FramelessWindowHint)
 
     def paintEvent(self, event: QtGui.QPaintEvent):  # noqa: N802, ARG002, inherited
+        """Draw the widget with the custom background."""
         painter = QtGui.QPainter(self)
         painter.setOpacity(1 - CONFIG.style.background_darkness_factor)
         painter.drawPixmap(self.rect(), self.background)
 
 
 class MainView(QtWidgets.QMainWindow):
+    """The main view holding all other views."""
     def __init__(self):
         super().__init__()
         self.setObjectName("MainView")
 
         self._build_ui()
-
-        # path = os.path.join(APP_CONFIG_ROOT, CONFIG.general.screen_saver_images)
-        # self.screen_saver = ScreenSaver(path)
-        #
-        # self.screen_saver_timer = QtCore.QTimer(self)
-        # self.screen_saver_timer.setSingleShot(True)
-        # self.screen_saver_timer.timeout.connect(self.show_screen_saver)
-        # self.screen_saver_timer.start(CONFIG.general.screen_saver_start_time*1000)
-        #
-        # self.last_mouse_position = QtGui.QCursor.pos()
 
     def _build_ui(self):
         self.widget = CentralWidget()
@@ -79,6 +77,7 @@ class MainView(QtWidgets.QMainWindow):
         layout.addWidget(self.stack)
 
     def add_page(self, page: View) -> int:
+        """Method to add a view to the application."""
         self.stack.addWidget(page)
         return self.stack.count() - 1
 

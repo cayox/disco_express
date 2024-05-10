@@ -1,3 +1,4 @@
+# ruff: noqa: D101
 from pydantic import BaseModel
 
 

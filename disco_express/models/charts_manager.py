@@ -8,6 +8,11 @@ HEADER = ["Title", "Artist", "Plays"]
 
 
 class ChartsManager:
+    """A manager managing charts with their respective plays and sorting them accordingly.
+
+    Args:
+        charts_file: the file the charts should be saved/loaded from.
+    """
     def __init__(self, charts_file: str):
         self.charts_file = charts_file
 
@@ -17,6 +22,7 @@ class ChartsManager:
             self.charts = pd.DataFrame(columns=HEADER)
 
     def get_charts_list(self) -> list[Song]:
+        """Method to retrieve the chars as a list of Songs."""
         charts = self.charts.sort_values("Plays", ascending=False)
 
         out = []
@@ -32,9 +38,15 @@ class ChartsManager:
         return out
 
     def load_charts(self) -> pd.DataFrame:
+        """Method to load the charts' database."""
         return pd.read_csv(self.charts_file, sep=";", header=0)
 
     def add_song(self, song: Song):
+        """Method to add a song into the charts' database.
+
+        Args:
+            song: the song to add
+        """
         titles = [title.strip().lower() for title in self.charts["Title"].values]
 
         if song.title.strip().lower() in titles:
