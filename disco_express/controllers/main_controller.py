@@ -12,6 +12,8 @@ from .music_wish_controller import MusicController
 
 
 class MainController(Controller[MainView]):
+    """Controller managing the MainView."""
+
     def __init__(self):
         super().__init__(MainView)
 
@@ -21,9 +23,11 @@ class MainController(Controller[MainView]):
 
     @property
     def view(self) -> MainView:
+        """Getter to retrieve the managed view."""
         return self._view
 
     def connect_view(self):
+        """Build all controllers necessary and connect to the MainView."""
         self.ctrl_home = HomeController()
         self.home_index = self.view.add_page(self.ctrl_home.view)
         self.view.home_button.clicked.connect(lambda: self.switch_page(self.home_index))
@@ -52,6 +56,7 @@ class MainController(Controller[MainView]):
 
     @QtCore.pyqtSlot()
     def set_selected_language(self):
+        """Method to change the language, invokes language changes to all subcontrollers as well."""
         language = self.ctrl_home.view.language_widget.get_selected_language()
         logging.info("Setting language: %s", language.language_name)
         self.view.title.setText(f"({CONFIG.general.app_name})")
@@ -62,5 +67,6 @@ class MainController(Controller[MainView]):
         self.ctrl_home.set_selected_language()
 
     def switch_page(self, index: int):
+        """Method to switch the page to the `index`."""
         self.view.home_button.setVisible(index != self.home_index)
         self.view.stack.setCurrentIndex(index)

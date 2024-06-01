@@ -1,3 +1,4 @@
+# ruff: noqa: D101
 from pydantic import BaseModel
 
 
@@ -108,6 +109,7 @@ class GeneralConfig(BaseModel):
 
     max_input_length: int
     max_input_length_message: int
+    min_charts_threshold: int
 
 
 class Config(BaseModel):

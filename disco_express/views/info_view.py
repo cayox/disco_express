@@ -1,19 +1,24 @@
 import os.path
+import tempfile
 
-from PyQt6 import QtCore, QtGui, QtWidgets
 from pdf2image import convert_from_path
 from PIL import Image
+from PyQt6 import QtCore, QtGui, QtWidgets
 
-from disco_express.config import CONFIG, APP_CONFIG_ROOT
-from disco_express.views.widgets import Button, IconButton, SubHeaderLabel, build_accent1_glow_effect
+from disco_express.config import APP_CONFIG_ROOT, CONFIG
+from disco_express.views.widgets import (
+    Button,
+    IconButton,
+    SubHeaderLabel,
+    build_accent1_glow_effect,
+)
 
 from .view import View
 
 
 class ScrollableImage(QtWidgets.QLabel):
-    """
-    A label widget that displays an image with zoom in and zoom out capabilities.
-    """
+    """A label widget that displays an image with zoom in and zoom out capabilities."""
+
     def __init__(self, pixmap: QtGui.QPixmap):
         super().__init__()
         self.setObjectName("ImageViewer")
@@ -22,52 +27,42 @@ class ScrollableImage(QtWidgets.QLabel):
         self.update_image()
 
     def update_image(self):
-        """
-        Update the image display based on the current scale factor.
-        """
+        """Update the image display based on the current scale factor."""
         scaled_pixmap = self.pixmap.scaled(
             self.size() * self.scale_factor,
             QtCore.Qt.AspectRatioMode.KeepAspectRatio,
-            QtCore.Qt.TransformationMode.SmoothTransformation
+            QtCore.Qt.TransformationMode.SmoothTransformation,
         )
         self.setPixmap(scaled_pixmap)
         self.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
     def zoom_in(self):
-        """
-        Increase the scale factor for the image.
-        """
+        """Increase the scale factor for the image."""
         self.scale_factor = 1.25
         self.update_image()
 
     def zoom_out(self):
-        """
-        Decrease the scale factor for the image.
-        """
+        """Decrease the scale factor for the image."""
         self.scale_factor = 0.75
         self.update_image()
 
 
 class ImageViewer(QtWidgets.QDialog):
-    """
-    Dialog to display an image with zoom and scroll capabilities.
-    """
+    """Dialog to display an image with zoom and scroll capabilities."""
+
     def __init__(self, image_path: str):
         super().__init__()
         self.setObjectName("ImageViewer")
         image = QtGui.QImage(image_path)
         self.image_label = ScrollableImage(QtGui.QPixmap.fromImage(image))
-        self.init_ui()
+        self._init_ui()
 
         self.auto_close_timer = QtCore.QTimer(self)
         self.auto_close_timer.setSingleShot(True)
         self.auto_close_timer.timeout.connect(self.close)
         self.auto_close_timer.start(CONFIG.general.auto_close_time * 1000)
 
-    def init_ui(self):
-        """
-        Initialize the user interface components.
-        """
+    def _init_ui(self):
         layout = QtWidgets.QVBoxLayout(self)
         scroll_area = QtWidgets.QScrollArea()
         scroll_area.setWidgetResizable(True)
@@ -98,17 +93,13 @@ class ImageViewer(QtWidgets.QDialog):
         self.zoom_out_button.clicked.connect(self.image_label.zoom_out)
         self.zoom_out_button.setFixedSize(icon_size, icon_size)
 
-    def resizeEvent(self, a0: QtGui.QResizeEvent):
-        """
-        Handle the resize event.
-        """
+    def resizeEvent(self, a0: QtGui.QResizeEvent):  # noqa: N802
+        """Handle the resize event."""
         self.resize(a0.size())
         super().resizeEvent(a0)
 
     def resize(self, a0: QtCore.QSize):
-        """
-        Adjust the dialog size based on the size of the viewport.
-        """
+        """Adjust the dialog size based on the size of the viewport."""
         super().resize(a0)
 
         x_margin = int(a0.width() * 0.033)
@@ -119,25 +110,24 @@ class ImageViewer(QtWidgets.QDialog):
         self.zoom_in_button.move(point)
 
         self.zoom_out_button.move(
-            QtCore.QPoint(a0.width() - x_margin, int(y_start + 40))
+            QtCore.QPoint(a0.width() - x_margin, int(y_start + 40)),
         )
 
 
 class PdfViewer(QtWidgets.QDialog):
-    """
-    Dialog to display a PDF file with zoom and scroll capabilities, using PyMuPDF for rendering.
+    """Dialog to display a PDF file with zoom and scroll capabilities, using PyMuPDF for rendering.
+
     Loads all pages of the PDF into a single image for viewing.
     """
+
     def __init__(self, pdf_file: str):
         super().__init__()
         self.setObjectName("PdfViewer")
         self.pdf_file = pdf_file
-        self.init_ui()
+        self.setWindowFlag(QtCore.Qt.WindowType.FramelessWindowHint)
+        self._init_ui()
 
-    def init_ui(self):
-        """
-        Initialize the user interface components.
-        """
+    def _init_ui(self):
         layout = QtWidgets.QVBoxLayout(self)
         self.scroll_area = QtWidgets.QScrollArea()
         self.scroll_area.setWidgetResizable(True)
@@ -171,6 +161,7 @@ class PdfViewer(QtWidgets.QDialog):
         self.zoom_out_button.setFixedSize(icon_size, icon_size)
 
     def load_pages(self) -> QtGui.QPixmap:
+        """Method to load all pages of a PDF and merge them to one image."""
         images = convert_from_path(self.pdf_file, dpi=200)
         if not images:
             return QtGui.QPixmap()
@@ -185,22 +176,18 @@ class PdfViewer(QtWidgets.QDialog):
             combined_image.paste(img, (0, y_offset))
             y_offset += img.height
 
-        # Save to a temporary file
-        temp_image_path = "/tmp/combined_pdf_image.jpg"
-        combined_image.save(temp_image_path)
-        return QtGui.QPixmap(temp_image_path)
+        with tempfile.NamedTemporaryFile(suffix=".jpg") as file:
+            # Save to a temporary file
+            combined_image.save(file.name)
+            return QtGui.QPixmap(file.name)
 
-    def resizeEvent(self, a0: QtGui.QResizeEvent):
-        """
-        Handle the resize event.
-        """
+    def resizeEvent(self, a0: QtGui.QResizeEvent):  # noqa: N802
+        """Handle the resize event."""
         self.resize(a0.size())
         super().resizeEvent(a0)
 
     def resize(self, a0: QtCore.QSize):
-        """
-        Adjust the dialog size based on the size of the viewport.
-        """
+        """Adjust the dialog size based on the size of the viewport."""
         super().resize(a0)
 
         x_margin = int(a0.width() * 0.033)
@@ -211,11 +198,13 @@ class PdfViewer(QtWidgets.QDialog):
         self.zoom_in_button.move(point)
 
         self.zoom_out_button.move(
-            QtCore.QPoint(a0.width() - x_margin, int(y_start + 40))
+            QtCore.QPoint(a0.width() - x_margin, int(y_start + 40)),
         )
 
 
 class DocumentWidget(QtWidgets.QPushButton):
+    """Button to display a document."""
+
     ICON_SIZE = (36, 48)
 
     def __init__(self, path: str):
@@ -225,11 +214,13 @@ class DocumentWidget(QtWidgets.QPushButton):
 
         self.setGraphicsEffect(build_accent1_glow_effect())
 
-        self.path = os.path.join(os.getcwd(), path)
+        self.path = path
         self.name = name
 
 
 class InfoView(View):
+    """View representing the Information page."""
+
     MAX_COLS = 3
 
     def _build_ui(self):
@@ -269,10 +260,15 @@ class InfoView(View):
         dialog_class = PdfViewer if file.lower().endswith(".pdf") else ImageViewer
         dialog = dialog_class(file)
 
-        dialog.showMaximized()
+        dialog.showFullScreen()
         dialog.exec()
 
     def list_documents(self):
+        """List and display all available documents in the documents directory from the config.toml.
+
+        Uses from config.toml:
+        - CONFIG.general.documents_directory
+        """
         while item := self.layout.takeAt(0):
             if widget := item.widget():
                 widget.deleteLater()
@@ -282,12 +278,11 @@ class InfoView(View):
 
         for document in os.listdir(root):
             path = os.path.join(root, document)
+            # ignore hidden files like .DS_Store
             if not os.path.isfile(path) or document.startswith("."):
                 continue
 
-            doc_widget = DocumentWidget(
-                path,
-            )
+            doc_widget = DocumentWidget(path)
             doc_widget.clicked.connect(self._on_doc_selected)
 
             self.layout.addWidget(doc_widget)

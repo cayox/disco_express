@@ -10,6 +10,8 @@ from .controller import Controller
 
 
 class HomeController(Controller[HomeView]):
+    """Controller managing the HomeView."""
+
     def __init__(self):
         super().__init__(HomeView)
 
@@ -22,12 +24,15 @@ class HomeController(Controller[HomeView]):
             CONFIG.network.server_ip,
             CONFIG.network.server_port,
         )
+
         self.refresh_banner()
 
-    def connect_view(self): ...
+    def connect_view(self):
+        """Overwrite method because its parent is abstract."""
 
     @QtCore.pyqtSlot()
     def set_selected_language(self):
+        """Method to set the selected langauge to all view managed by this controller."""
         language = self.get_language()
 
         self.view.music_wish_button.setText(language.home_music_wish_btn)
@@ -37,6 +42,7 @@ class HomeController(Controller[HomeView]):
 
     @QtCore.pyqtSlot()
     def refresh_banner(self):
+        """Method to load and display the banner texts."""
         try:
             banner_texts = self.jukebox_client.get_banner_texts()
         except JukeBoxConnectionError as exc:

@@ -3,7 +3,6 @@ import os.path
 import shutil
 import sys
 import tomllib
-import platform
 
 from .models import Config, Song
 
@@ -12,17 +11,16 @@ def get_application_path() -> str:
     """Return the path of the application."""
     if getattr(sys, "frozen", False):
         return sys._MEIPASS  # noqa: SLF001
-    return os.path.abspath(os.getcwd())
+    return os.path.abspath(os.path.dirname(sys.modules["__main__"].__file__))
 
 
 APP_CONFIG_ROOT = os.path.expanduser("~/disco_express")
-if os.path.isfile("/etc/rpi-issue"):
-    APP_CONFIG_ROOT = "/etc/disco_express"
 
 ASSETS = os.path.join(get_application_path(), "assets")
 
 
 def checkout_files():
+    """Check if necessary files are in APP_CONFIG_ROOT and copy them there if not."""
     os.makedirs(APP_CONFIG_ROOT, exist_ok=True)
 
     dirs_to_checkout = ["img", "data", "icons"]
@@ -52,12 +50,14 @@ with open(slurs_file, "rb") as f:
 
 
 def contains_slur(text: str) -> bool:
+    """Function to check if a text contains a slur."""
     words = text.lower().split(" ")
 
     return any(word in SLURS for word in words)
 
 
 def load_songs_from_csv(file_path: str) -> list[Song]:
+    """Function to load the songs from a csv file."""
     songs = []
     with open(file_path, newline="") as file:
         reader = csv.reader(file, delimiter=";")

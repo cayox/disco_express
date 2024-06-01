@@ -33,7 +33,7 @@ documents_directory = "documents"
 # Automatisches Schließen der Dokumente oder Charts menü
 auto_close_time = 300  # in seconds
 # Abfrageintervall an den Disco Express Server. Demnach auch Aktualisierungszeit bei Serverseitigen Einstellungen.
-server_refresh_interval = 10  # in seconds
+server_refresh_interval = 5  # in seconds
 # Delay das eingestellt wird wenn ein Musikwunsch abgeschickt wird.
 wish_sending_time = 10 # in seconds
 # interval in welchem das banner um einen Buschstaben weiter rückt
@@ -43,12 +43,8 @@ banner_speed = 100 # in millisekunden
 max_input_length = 32
 # maximale Eingabelänge bei dem Message Musikwunschfeld
 max_input_length_message = 64
-
-
-######### SCREEN SAVER
-#screen_saver_images = "screen_saver"
-#screen_saver_rotation_speed = 5 # seconds
-#screen_saver_start_time = 5 # seconds
+# schwellwert um in den charts aufgelistet zu werden
+min_charts_threshold = 3
 
 
 ######### ICONS
@@ -185,7 +181,9 @@ loading_success = "Your music wish was sent sucessfully!"
 ## UI
 
 Das Programm beinhaltete eine Home Seite, wo zwischen "Musikwunsch" und "Information"
-gewählt werden kann. 
+gewählt werden kann.
+
+Das programm kann mittels einer geheimen Tastenkombination ``Ctrl+Alt+Shift+Q`` geschlossen werden.
 
 ### Musikwunsch
 Hier kann ein User einen Musikwunsch eingeben. Dabei sind Titel und Interpret Pflichteingaben.
@@ -207,7 +205,7 @@ sind dabei PDFs und Bilddateien.
 
 
 ## Entwickler Hinweise
-Das Programm wurde mittels Python 3.11.6 entwickelt. Für das Dependeny Management wird poetry verwendet:
+Das Programm wurde mittels Python 3.11.6 entwickelt. Für das Dependency Management wird poetry verwendet:
 
 ```pip install poetry```
 
@@ -215,19 +213,47 @@ Sobald poetry installiert ist, können die Abhängigkeiten installiert werden:
 
 ```poetry install```
 
-Die App kann als ausfürbare Datei gebaut werden mittels. Die erstellte App befindet sich
+Die App kann als ausführbare Datei gebaut werden mittels. Die erstellte App befindet sich
 dann im "dist" ordner.
 
 ```poetry run poe build```
-
 
 Diese Datei kann als PDF generiert werden durch:
 
 ```poetry run poe docs```
 
+## Raspberry Pi
+### Installation
+1. Downloade das ``pi/disco_express.img.gz`` Image
+2. Downloade den [Raspberry Pi Imager](https://www.raspberrypi.com/software/)
+3. Im Raspberry Pi Imager, wähle bei OS -> Use custom -> ``disco_express.img.gz``
+4. Wähle das Speichermedium 
+5. Übernehme oder ändere *keine* Einstellungen
+6. Drücke next um das Image auf die SD Karte zu spielen
+
+### Terminal und Management Hilfen
+In diesem Projekt liegen unter ``commands`` einige Shell-Skripte, welche das managen des
+Raspberry Pi's vereinfachen sollen. 
+
+* [autostart_disable.sh](commands%2Fautostart_disable.sh) -> stoppt den autostart
+* [autostart_enable.sh](commands%2Fautostart_enable.sh) -> aktiviert den autostart wieder
+* [install.sh](commands%2Finstall.sh) -> installiert dieses programm
+* [kill.sh](commands%2Fkill.sh) -> Stoppt das laufende programm
+* [reset.sh](commands%2Freset.sh) -> Setzt alle Einstellungen auf Werkseinstellungen zurück
+* [update_and_install.sh](commands%2Fupdate_and_install.sh) -> aktualisiert das programm und installiert es (internet benötigt)
+
+### Infos
+
+* Projekt in ``/opt/disco_express``
+* Autostart in ``~/.config/autostart/disco_express.desktop``
+* Screensaver Images in ``~/screensaver_images`` -> Bilder hinzufügen die dann als Bildschirmschoner angezeigt werden.
+
+
+* User: ``disco_express``
+* Password: ``disco_express``
+
+
 # Pflichtangaben
 Icons von [Fontawesome](https://fontawesome.com/)
 
 App Icon von [Flaticon](https://www.flaticon.com/free-icon/jukebox_1026050?term=jukebox&page=1&position=1&origin=tag&related_id=1026050)
-
-

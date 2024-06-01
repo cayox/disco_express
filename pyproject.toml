@@ -20,8 +20,8 @@ pdf2image = "^1.17.0"
 black = "^24.3.0"
 ruff = "^0.3.5"
 poethepoet = "^0.26.0"
-mdpdf = "^0.0.18"
 pyinstaller = "^6.6.0"
+mdpdf = "^0.0.18"
 
 [build-system]
 requires = ["poetry-core"]
@@ -81,10 +81,6 @@ select = [
     "DJ"
 ]
 ignore = [
-    "D100",
-    "D104",
-    "D102",
-    "D107",
     "ANN101", # ignore type annotation for self
     "ANN204", # ignore return type annotation for init
     "E501", # Line too Long -> covered by black
@@ -96,9 +92,9 @@ ignore = [
     "ISC003",  # explicitly concatenated string
     "ANN002",  # type annotation for args
     "ANN003",  # type annotation for kwargs
-
-    # Temporary dev ignore
-    "D1",
+    "D107",  # missing docstring in __init__
+    "D100",  # missing docstring in module
+    "D104",  # missing docstring in package
 ]
 
 [tool.ruff.lint.pydocstyle]

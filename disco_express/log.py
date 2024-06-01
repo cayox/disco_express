@@ -11,7 +11,7 @@ class PrettyFormatter(logging.Formatter):
         self.datefmt = "%Y-%m-%d %H:%M:%S"
         self.style = "{"
 
-    def format(self, record: logging.LogRecord) -> str:
+    def format(self, record: logging.LogRecord) -> str:  # noqa: D102
         # Setting the default format for the message before adding extras
         format_orig = self.fmt
         format_orig = "[{filename}:{lineno} ({funcName})] " + format_orig
@@ -43,7 +43,7 @@ def setup_basic_logger(log_file_path: str) -> None:
     stream_handler.setFormatter(PrettyFormatter())
 
     # File handler setup
-    file_handler = RotatingFileHandler(log_file_path, maxBytes=1048576, backupCount=5)
+    file_handler = RotatingFileHandler(log_file_path, maxBytes=2**18, backupCount=5)
     file_handler.setLevel(logging.DEBUG)
     file_handler.setFormatter(PrettyFormatter())
 

@@ -13,13 +13,17 @@ from disco_express.views.widgets import (
 from .view import View
 
 
-class NavigationButton1(Button):
+class NavigationButton(Button):
+    """Button with custom style via QSS Stylesheet."""
+
     def __init__(self, *args: Any, **kwargs: Any):
         super().__init__(*args, **kwargs)
-        self.setObjectName("NavigationButton1")
+        self.setObjectName("NavigationButton")
 
 
 class HomeView(View):
+    """View representing the home page."""
+
     def _build_ui(self):
         layout = QtWidgets.QVBoxLayout(self)
         layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
@@ -34,13 +38,13 @@ class HomeView(View):
         button_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         button_layout.setSpacing(128)
 
-        self.music_wish_button = NavigationButton1(
+        self.music_wish_button = NavigationButton(
             CONFIG.selected_language.home_music_wish_btn,
         )
 
         button_layout.addWidget(self.music_wish_button)
 
-        self.info_button = NavigationButton1(CONFIG.selected_language.home_info_btn)
+        self.info_button = NavigationButton(CONFIG.selected_language.home_info_btn)
         button_layout.addWidget(self.info_button)
 
         self.language_widget = LanguageSwitch()
