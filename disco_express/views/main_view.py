@@ -148,7 +148,9 @@ class MainView(QtWidgets.QMainWindow):
             super().keyPressEvent(event)
 
     def eventFilter(  # noqa: N802, inherited
-        self, source: QtCore.QObject, event: QtCore.QEvent,
+        self,
+        source: QtCore.QObject,
+        event: QtCore.QEvent,
     ) -> bool:
         """Overwrite the event filter to add custom keypress handler."""
         if event.type() == QtCore.QEvent.Type.KeyPress:

@@ -86,7 +86,11 @@ class JukeBoxClient:
         logging.debug("Sending to %s this data: %s", uri, data)
         try:
             response = requests.request(
-                method, uri, json=data, headers=headers, timeout=10,
+                method,
+                uri,
+                json=data,
+                headers=headers,
+                timeout=10,
             )
         except requests.exceptions.ConnectionError as exc:
             raise JukeBoxConnectionError(str(exc)) from exc
