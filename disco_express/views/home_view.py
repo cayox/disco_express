@@ -15,6 +15,7 @@ from .view import View
 
 class NavigationButton(Button):
     """Button with custom style via QSS Stylesheet."""
+
     def __init__(self, *args: Any, **kwargs: Any):
         super().__init__(*args, **kwargs)
         self.setObjectName("NavigationButton")
@@ -22,6 +23,7 @@ class NavigationButton(Button):
 
 class HomeView(View):
     """View representing the home page."""
+
     def _build_ui(self):
         layout = QtWidgets.QVBoxLayout(self)
         layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)

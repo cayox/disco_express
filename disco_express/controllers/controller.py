@@ -11,6 +11,7 @@ V = TypeVar("V")
 
 class Controller(QtCore.QObject, Generic[V]):
     """Base class for a controller."""
+
     def __init__(self, view_class: type[V]):
         super().__init__()
 

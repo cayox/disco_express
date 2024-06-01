@@ -27,6 +27,7 @@ class SongRow(QtWidgets.QWidget):
         value: the actual information
         plays: how many plays the song has. Only displayed if > 0
     """
+
     ICON_SIZE = 48
 
     def __init__(self, icon: str, description: str, value: str, plays: int = 0):
@@ -84,6 +85,7 @@ class SongWidget(QtWidgets.QGroupBox):
         song: the song to display.
         show_plays: whether the plays of the song should be shown.
     """
+
     clicked = QtCore.pyqtSignal()
 
     def __init__(self, index: int, song: Song, show_plays: bool = False):
@@ -156,6 +158,7 @@ class SongsListWidget(QtWidgets.QWidget):
         chart_list: the list of songs to display
         show_plays: Whether the plays of each song should be displayed.
     """
+
     song_selected = QtCore.pyqtSignal(Song)
 
     MAX_COLS = 3
@@ -208,6 +211,7 @@ class QuickSelectionDialog(QtWidgets.QDialog):
     Args:
         language: The language in which the quick selection should be displayed.
     """
+
     MAX_COLS = 3
 
     def __init__(self, language: LanguageConfig):
@@ -216,7 +220,10 @@ class QuickSelectionDialog(QtWidgets.QDialog):
         self.setObjectName("QuickSelectionDialog")
 
         charts_path = os.path.join(APP_CONFIG_ROOT, CONFIG.general.charts_file)
-        self.charts_manager = ChartsManager(charts_path)
+        self.charts_manager = ChartsManager(
+            charts_path,
+            charts_threshold=CONFIG.general.min_charts_threshold,
+        )
 
         self._selected_song = None
         self.language = language
@@ -254,11 +261,11 @@ class QuickSelectionDialog(QtWidgets.QDialog):
 
         self.charts_widget = SongsListWidget(self.load_charts(), show_plays=True)
         self.charts_widget.song_selected.connect(self._on_song_selected)
-        self.tab.addTab(self.charts_widget, "[Charts]")
+        self.tab.addTab(self.charts_widget, "[Most Wanted]")
 
         self.charts_widget = SongsListWidget(CURRENT_CHARTS_SONGS)
         self.charts_widget.song_selected.connect(self._on_song_selected)
-        self.tab.addTab(self.charts_widget, "[Radio]")
+        self.tab.addTab(self.charts_widget, "[Charts]")
 
         close_button = Button("Close")
         close_button.clicked.connect(self.close)

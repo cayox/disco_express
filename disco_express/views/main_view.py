@@ -1,4 +1,6 @@
+import logging
 import os
+import sys
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 
@@ -15,6 +17,7 @@ class CentralWidget(QtWidgets.QWidget):
     - CONFIG.style.background_image
     - CONFIG.style.background_darkness_factor
     """
+
     def __init__(self):
         super().__init__()
 
@@ -33,6 +36,7 @@ class CentralWidget(QtWidgets.QWidget):
 
 class MainView(QtWidgets.QMainWindow):
     """The main view holding all other views."""
+
     def __init__(self):
         super().__init__()
         self.setObjectName("MainView")
@@ -83,4 +87,71 @@ class MainView(QtWidgets.QMainWindow):
 
     def closeEvent(self, event: QtGui.QCloseEvent):  # noqa: N802, inherited
         """Override the close event to prevent closing."""
+        logging.info("Ignoring close event")
         event.ignore()  # Ignore the close event
+
+    def keyPressEvent(self, event: QtGui.QKeyEvent):  # noqa: N802, inherited
+        """Custom Key Event handler, to ignore common keyboard shortcuts to kill the app or get it out of focus."""
+        # Define the secret shortcut Ctrl+Alt+Shift+Q
+        if event.key() == QtCore.Qt.Key.Key_Q and event.modifiers() == (
+            QtCore.Qt.KeyboardModifier.ControlModifier
+            | QtCore.Qt.KeyboardModifier.AltModifier
+            | QtCore.Qt.KeyboardModifier.ShiftModifier
+        ):
+            logging.info("Closing app through keyboard shortcut")
+            sys.exit(0)
+
+        # Block common system shortcuts on Raspbian OS
+        if (
+            event.modifiers() == QtCore.Qt.KeyboardModifier.ControlModifier
+            and event.key()
+            in [
+                QtCore.Qt.Key.Key_Tab,
+                QtCore.Qt.Key.Key_W,
+                QtCore.Qt.Key.Key_Q,
+                QtCore.Qt.Key.Key_T,
+                QtCore.Qt.Key.Key_L,
+                QtCore.Qt.Key.Key_Escape,
+            ]
+            or event.modifiers()
+            == (
+                QtCore.Qt.KeyboardModifier.AltModifier
+                | QtCore.Qt.KeyboardModifier.ControlModifier
+            )
+            and event.key() == QtCore.Qt.Key.Key_Delete
+            or (
+                event.modifiers() == QtCore.Qt.KeyboardModifier.AltModifier
+                and event.key()
+                in [
+                    QtCore.Qt.Key.Key_Tab,
+                    QtCore.Qt.Key.Key_F4,
+                    QtCore.Qt.Key.Key_F2,
+                    QtCore.Qt.Key.Key_Escape,
+                    QtCore.Qt.Key.Key_F7,
+                    QtCore.Qt.Key.Key_F10,
+                ]
+                or event.modifiers() == QtCore.Qt.KeyboardModifier.AltModifier
+                and event.key() == QtCore.Qt.Key.Key_Print
+            )
+            or event.modifiers() == QtCore.Qt.KeyboardModifier.MetaModifier
+            and event.key()
+            in [
+                QtCore.Qt.Key.Key_Space,
+                QtCore.Qt.Key.Key_L,
+                QtCore.Qt.Key.Key_D,
+                QtCore.Qt.Key.Key_Tab,
+                QtCore.Qt.Key.Key_Escape,
+            ]
+        ):
+            event.ignore()
+        else:
+            super().keyPressEvent(event)
+
+    def eventFilter(  # noqa: N802, inherited
+        self, source: QtCore.QObject, event: QtCore.QEvent,
+    ) -> bool:
+        """Overwrite the event filter to add custom keypress handler."""
+        if event.type() == QtCore.QEvent.Type.KeyPress:
+            self.keyPressEvent(event)
+            return True
+        return super().eventFilter(source, event)

@@ -12,6 +12,7 @@ from .controller import Controller
 
 class InfoController(Controller[InfoView]):
     """Controller managing the InfoView."""
+
     def __init__(self):
         super().__init__(InfoView)
 

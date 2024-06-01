@@ -13,6 +13,7 @@ class JukeBoxConnectionError(Exception):
 
 class ServerStatus(Enum):
     """All available server status."""
+
     OK = "OK"
     UNAVAILABLE = "UNAVAILABLE"
     SHUTDOWN = "SHUTDOWN"
@@ -21,6 +22,7 @@ class ServerStatus(Enum):
 
 class MusicRequest(BaseModel):
     """The Schema of the music request sent to the server."""
+
     title: str
     interpret: str
     sender: str | None = None
@@ -30,12 +32,14 @@ class MusicRequest(BaseModel):
 
 class JukeBoxError(BaseModel):
     """The Schema of the errors retrieved from the server."""
+
     status: int
     error: str
 
 
 class BannerSchema(BaseModel):
     """The Schema of the banners retrieved from the server."""
+
     german: str
     english: str
 
@@ -55,6 +59,7 @@ class JukeBoxClient:
         address: the ip/domain address of the server
         port: the port the server is running on
     """
+
     def __init__(self, address: str, port: int):
         self.address = address
         self.port = port
@@ -80,7 +85,9 @@ class JukeBoxClient:
         headers = {"Content-Type": "application/json"}
         logging.debug("Sending to %s this data: %s", uri, data)
         try:
-            response = requests.request(method, uri, json=data, headers=headers)
+            response = requests.request(
+                method, uri, json=data, headers=headers, timeout=10,
+            )
         except requests.exceptions.ConnectionError as exc:
             raise JukeBoxConnectionError(str(exc)) from exc
         if status_ok(response.status_code):

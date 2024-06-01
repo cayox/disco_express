@@ -32,6 +32,7 @@ def build_highlight_glow_effect() -> QtWidgets.QGraphicsDropShadowEffect:
 
 class GlowLabel(QtWidgets.QLabel):
     """Label where a glow effect is applied."""
+
     def __init__(self, *args: Any, **kwargs: Any):
         super().__init__(*args, **kwargs)
 
@@ -43,6 +44,7 @@ class SubHeaderLabel(GlowLabel):
 
     Has glow effect.
     """
+
     def __init__(self, *args: Any, **kwargs: Any):
         super().__init__(*args, **kwargs)
 
@@ -61,6 +63,7 @@ class IconButton(QtWidgets.QPushButton):
         color: the wanted color, works only for SVGs.
         size: the wanted size for the icon.
     """
+
     def __init__(self, icon: str, color: str, size: int, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.setObjectName("IconButton")
@@ -75,6 +78,7 @@ class Button(QtWidgets.QPushButton):
 
     Has glow effect.
     """
+
     def __init__(self, text: str):
         super().__init__()
         self.setText(text)
@@ -90,6 +94,7 @@ class HeaderLabel(GlowLabel):
 
     Has glow effect.
     """
+
     def __init__(self, *args: Any, **kwargs: Any):
         super().__init__(*args, **kwargs)
         self.setObjectName("HeaderLabel")
@@ -100,6 +105,7 @@ class TitleLabel(GlowLabel):
 
     Has glow effect.
     """
+
     def __init__(self, text: str):
         super().__init__(f"({text})")
         self.setObjectName("Title")
@@ -152,6 +158,7 @@ class LanguageButton(QtWidgets.QPushButton):
     Args:
         language: the language to represent.
     """
+
     def __init__(self, language: LanguageConfig):
         super().__init__()
         self.setObjectName("LanguageButton")
@@ -185,6 +192,7 @@ class LanguageSwitch(QtWidgets.QWidget):
     Uses all languages configured in the config.toml:
     - CONFIG.languages
     """
+
     language_switched = QtCore.pyqtSignal(LanguageConfig)
 
     def __init__(self, parent: QtWidgets.QWidget | None = None) -> None:
@@ -233,6 +241,7 @@ class StatusWidget(QtWidgets.QWidget):
     Args:
         visible: whether the widget should be visible upon startup
     """
+
     ICON_SIZE = 48
 
     def __init__(self, visible: bool = False):
@@ -309,12 +318,17 @@ class LoadingModal(QtWidgets.QDialog):
     - CONFIG.selected_language.loading_description
     - CONFIG.selected_language.loading_success
     """
+
     def __init__(self):
         super().__init__()
 
         self.setObjectName("LoadingModal")
 
         self._loading_text_index = 0
+
+        self.setWindowTitle("Loading ...")
+        self.setWindowFlags(QtCore.Qt.WindowType.FramelessWindowHint)
+        self.setGraphicsEffect(build_highlight_glow_effect())
 
         self._build_ui()
 
@@ -392,6 +406,7 @@ class RotatingBanner(GlowLabel):
     Args:
         text: the text to rotate
     """
+
     def __init__(self, text: str):
         super().__init__()
         self.setObjectName("RotatingLabel")

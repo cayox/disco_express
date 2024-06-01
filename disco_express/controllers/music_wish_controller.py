@@ -21,6 +21,7 @@ from .controller import Controller
 
 class MusicController(Controller[MusicWishView]):
     """Controller controlling the behaviour of the MusicWishView."""
+
     music_request_sent = QtCore.pyqtSignal()
 
     def __init__(self):
@@ -65,6 +66,13 @@ class MusicController(Controller[MusicWishView]):
         self.view.quick_select_button.setText(language.btn_quick_selection)
 
         self.view.sub_heading.setText(language.heading_music_wish)
+
+        placeholder = (
+            f"Maximal {CONFIG.general.max_input_length_message} Zeichen"
+            if CONFIG.selected_language.language_name == "german"
+            else f"Maximum of {CONFIG.general.max_input_length_message} characters"
+        )
+        self.view.music_wish_widget.message.entry.setPlaceholderText(placeholder)
 
         self.check_connection()
 
@@ -128,8 +136,10 @@ class MusicController(Controller[MusicWishView]):
 
         self.chart_manager.add_song(song=Song(title=title, artist=interpret))
 
+        self.view.setDisabled(True)
         loading_modal = LoadingModal()
         loading_modal.exec()
+        self.view.setDisabled(False)
 
         self.view.music_wish_widget.music_title.setText("")
         self.view.music_wish_widget.artist.setText("")
@@ -145,8 +155,9 @@ class MusicController(Controller[MusicWishView]):
         try:
             status = self._client.get_status()
             self.set_connection_status(status)
-        except JukeBoxConnectionError:
+        except JukeBoxConnectionError as exc:
             self.set_connection_status(ServerStatus.ERROR)
+            logging.exception("Connection error", exc_info=exc)
 
     def set_connection_status(self, status: ServerStatus):
         """Method to display the fetched status of the server.

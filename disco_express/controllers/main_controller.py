@@ -13,6 +13,7 @@ from .music_wish_controller import MusicController
 
 class MainController(Controller[MainView]):
     """Controller managing the MainView."""
+
     def __init__(self):
         super().__init__(MainView)
 

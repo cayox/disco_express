@@ -327,3 +327,7 @@ QLabel#LoadingLabel, QLabel#LoadingSuccessLabel {
     background-color: transparent;
     padding: 0px;
 }
+
+QDialog#LoadingModal {
+    border: 2px solid %highlight%;
+}

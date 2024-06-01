@@ -18,6 +18,7 @@ from .view import View
 
 class ScrollableImage(QtWidgets.QLabel):
     """A label widget that displays an image with zoom in and zoom out capabilities."""
+
     def __init__(self, pixmap: QtGui.QPixmap):
         super().__init__()
         self.setObjectName("ImageViewer")
@@ -48,6 +49,7 @@ class ScrollableImage(QtWidgets.QLabel):
 
 class ImageViewer(QtWidgets.QDialog):
     """Dialog to display an image with zoom and scroll capabilities."""
+
     def __init__(self, image_path: str):
         super().__init__()
         self.setObjectName("ImageViewer")
@@ -117,10 +119,12 @@ class PdfViewer(QtWidgets.QDialog):
 
     Loads all pages of the PDF into a single image for viewing.
     """
+
     def __init__(self, pdf_file: str):
         super().__init__()
         self.setObjectName("PdfViewer")
         self.pdf_file = pdf_file
+        self.setWindowFlag(QtCore.Qt.WindowType.FramelessWindowHint)
         self._init_ui()
 
     def _init_ui(self):
@@ -172,10 +176,10 @@ class PdfViewer(QtWidgets.QDialog):
             combined_image.paste(img, (0, y_offset))
             y_offset += img.height
 
-        with tempfile.NamedTemporaryFile() as file:
+        with tempfile.NamedTemporaryFile(suffix=".jpg") as file:
             # Save to a temporary file
-            combined_image.save(file)
-            return QtGui.QPixmap(file)
+            combined_image.save(file.name)
+            return QtGui.QPixmap(file.name)
 
     def resizeEvent(self, a0: QtGui.QResizeEvent):  # noqa: N802
         """Handle the resize event."""
@@ -200,6 +204,7 @@ class PdfViewer(QtWidgets.QDialog):
 
 class DocumentWidget(QtWidgets.QPushButton):
     """Button to display a document."""
+
     ICON_SIZE = (36, 48)
 
     def __init__(self, path: str):
@@ -215,6 +220,7 @@ class DocumentWidget(QtWidgets.QPushButton):
 
 class InfoView(View):
     """View representing the Information page."""
+
     MAX_COLS = 3
 
     def _build_ui(self):
@@ -254,7 +260,7 @@ class InfoView(View):
         dialog_class = PdfViewer if file.lower().endswith(".pdf") else ImageViewer
         dialog = dialog_class(file)
 
-        dialog.showMaximized()
+        dialog.showFullScreen()
         dialog.exec()
 
     def list_documents(self):

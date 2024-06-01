@@ -11,7 +11,7 @@ def get_application_path() -> str:
     """Return the path of the application."""
     if getattr(sys, "frozen", False):
         return sys._MEIPASS  # noqa: SLF001
-    return os.path.abspath(os.path.dirname(sys.modules['__main__'].__file__))
+    return os.path.abspath(os.path.dirname(sys.modules["__main__"].__file__))
 
 
 APP_CONFIG_ROOT = os.path.expanduser("~/disco_express")

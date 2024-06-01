@@ -1,4 +1,4 @@
-from PyQt6 import QtCore, QtWidgets
+from PyQt6 import QtCore, QtGui, QtWidgets
 
 from disco_express.config import CONFIG
 from disco_express.views.widgets import (
@@ -13,6 +13,7 @@ from .view import View
 
 class MusicEntryDescriptor(QtWidgets.QLabel):
     """Widget representing the descriptor text of the MusicEntry widget."""
+
     def setText(self, a0: str):  # noqa: N802, D102, inherited
         super().setText(f"|{a0}¬")
         self.setObjectName("MusicEntryDescriptor")
@@ -31,6 +32,7 @@ class MusicEntry(QtWidgets.QWidget):
         text: the actual text which should be set
         max_length: the limit of characters for the QLineEdit
     """
+
     def __init__(
         self,
         description: str,
@@ -48,6 +50,15 @@ class MusicEntry(QtWidgets.QWidget):
 
         self.entry = QtWidgets.QLineEdit()
         self.entry.setMaxLength(max_length)
+
+        # Change the placeholder text color using QPalette
+        palette = self.entry.palette()
+        palette.setColor(
+            QtGui.QPalette.ColorRole.PlaceholderText,
+            QtGui.QColor(CONFIG.style.colors.accent1),
+        )
+        self.entry.setPalette(palette)
+
         layout.addWidget(self.entry)
 
         if text is not None:
@@ -71,6 +82,7 @@ class MusicEntry(QtWidgets.QWidget):
 
 class MusicWishWidget(QtWidgets.QGroupBox):
     """Widget to display the input fields for a music wish."""
+
     def __init__(self):
         super().__init__()
         self.setObjectName("MusicWishWidget")
@@ -120,6 +132,7 @@ class MusicWishWidget(QtWidgets.QGroupBox):
 
 class MusicWishView(View):
     """View to display the music wish input matrix."""
+
     def _build_ui(self):
         layout = QtWidgets.QVBoxLayout(self)
 

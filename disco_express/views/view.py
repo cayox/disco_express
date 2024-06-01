@@ -3,6 +3,7 @@ from PyQt6 import QtWidgets
 
 class View(QtWidgets.QWidget):
     """Base view class."""
+
     def __init__(self):
         super().__init__()
         self.setObjectName(self.__class__.__name__)

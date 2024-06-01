@@ -11,6 +11,7 @@ from .controller import Controller
 
 class HomeController(Controller[HomeView]):
     """Controller managing the HomeView."""
+
     def __init__(self):
         super().__init__(HomeView)
 
@@ -23,6 +24,7 @@ class HomeController(Controller[HomeView]):
             CONFIG.network.server_ip,
             CONFIG.network.server_port,
         )
+
         self.refresh_banner()
 
     def connect_view(self):

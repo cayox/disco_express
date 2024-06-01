@@ -43,7 +43,7 @@ def setup_basic_logger(log_file_path: str) -> None:
     stream_handler.setFormatter(PrettyFormatter())
 
     # File handler setup
-    file_handler = RotatingFileHandler(log_file_path, maxBytes=1048576, backupCount=5)
+    file_handler = RotatingFileHandler(log_file_path, maxBytes=2**18, backupCount=5)
     file_handler.setLevel(logging.DEBUG)
     file_handler.setFormatter(PrettyFormatter())
 

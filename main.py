@@ -1,4 +1,3 @@
-import datetime
 import logging
 import os
 import sys
@@ -15,7 +14,7 @@ FONTS = os.path.join(ASSETS, "fonts")
 log_file = os.path.join(
     APP_CONFIG_ROOT,
     CONFIG.general.log_directory,
-    f"disco_express_{datetime.datetime.now().strftime('%d-%m-%Y_%H-%M-%S')}.log",
+    "disco_express.log",
 )
 os.makedirs(os.path.dirname(log_file), exist_ok=True)
 setup_basic_logger(log_file)
@@ -47,8 +46,9 @@ def main():  # noqa: D103
     ctrl.view.showFullScreen()
     try:
         app.exec()
-    except BaseException:
-        logging.exception("Base Exception ocurred")
+    except BaseException as exc:
+        logging.exception("Base Exception ocurred", exc_info=exc)
+        logging.log("Shutting down")
 
 
 if __name__ == "__main__":

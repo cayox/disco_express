@@ -12,9 +12,12 @@ class ChartsManager:
 
     Args:
         charts_file: the file the charts should be saved/loaded from.
+        charts_threshold: the minimum amount of plays needed to be in the charts.
     """
-    def __init__(self, charts_file: str):
+
+    def __init__(self, charts_file: str, charts_threshold: int = 0):
         self.charts_file = charts_file
+        self.charts_threshold = charts_threshold
 
         if os.path.isfile(self.charts_file):
             self.charts = self.load_charts()
@@ -23,7 +26,10 @@ class ChartsManager:
 
     def get_charts_list(self) -> list[Song]:
         """Method to retrieve the chars as a list of Songs."""
-        charts = self.charts.sort_values("Plays", ascending=False)
+        charts = self.charts[self.charts["Plays"] >= self.charts_threshold].sort_values(
+            "Plays",
+            ascending=False,
+        )
 
         out = []
         for _, chart in charts.iterrows():
